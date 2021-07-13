@@ -6,10 +6,10 @@ body {
 
 #calculator-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 
-    "display display display";
+    "display display display display";
     height: 500px;
     width: 300px;
 }
