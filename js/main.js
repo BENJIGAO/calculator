@@ -24,12 +24,13 @@ function operate(num1, num2, operator) {
         case '*':
             return multiply(num1, num2);
         case '/':
-            return divide(num1, num2);
+            return num2 != 0 ? divide(num1, num2) : 'ERROR';
     }
 }
 
 function doOperation(e) {
     const calcDisplay = document.getElementById('number-display');
+    if (calcDisplay.dataset.num2 == '0') return;
     let result = operate(
         +calcDisplay.dataset.num1,
         +calcDisplay.dataset.num2,
@@ -39,7 +40,9 @@ function doOperation(e) {
 }
 
 function updateDisplay(display, result, operator) {
-    display.dataset.num1 = display.textContent = result;
+    display.textContent = result;
+    if (result === 'ERROR') result = '0';
+    display.dataset.num1 = result
     display.dataset.operator = operator;
     display.dataset.num2 = '0';
     const nums = document.querySelectorAll('.num');
