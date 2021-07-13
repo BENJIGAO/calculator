@@ -17,46 +17,44 @@ function divide(a, b) {
 function operate(num1, num2, operator) {
     switch(operator) {
         case '+':
-            add(num1, num2);
-            break;
+            return add(num1, num2);
         case '-':
-            subtract(num1, num2);
-            break;
+            return subtract(num1, num2);
+          
         case '*':
-            multiply(num1, num2);
-            break;
+            return multiply(num1, num2);
         case '/':
-            divide(num1, num2);
-            break;
+            return divide(num1, num2);
     }
 }
 
-function main() {
-    
-
-    
-    activateBtns();
-    
-
-}
-
-
 function activateBtns() {
     const nums = document.querySelectorAll('.num');
-    nums.forEach((num) => num.addEventListener('click', populateDisplay));
+    nums.forEach(num => num.addEventListener('click', populateDisplay));
     const operatorBtns = document.querySelectorAll('.operator');
+    operatorBtns.forEach(operatorBtn => operatorBtn.addEventListener('click', doOperation))
     
 }
 
-function doOperation() {
-    return;
+function doOperation(e) {
+    const calcDisplay = document.getElementById('number-display');
+    let result = operate(
+        +calcDisplay.dataset.num1,
+        +calcDisplay.dataset.num2,
+        calcDisplay.dataset.operator
+    );
+    calcDisplay.dataset.num1 = calcDisplay.textContent = result;
+    calcDisplay.dataset.operator = e.target.getAttribute('id');
+    calcDisplay.dataset.num2 = '0';
 }
 
 function populateDisplay(e) {
-    document.getElementById('number-display').textContent += e.target.textContent;
-    console.log(a);
+    const calcDisplay = document.getElementById('number-display');
+    const newNum = e.target.textContent;
+    calcDisplay.textContent += newNum;
+    calcDisplay.dataset.num2 += newNum;
 }
 
-main();
+activateBtns();
 
 
