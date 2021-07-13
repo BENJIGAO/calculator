@@ -32,9 +32,7 @@ function operate(num1, num2, operator) {
 }
 
 function main() {
-    let a = 5;
-    const plusBtn = document.getElementById('plus-btn');
-    plusBtn.addEventListener('click', doOperation);
+    
 
     
     activateBtns();
@@ -44,20 +42,13 @@ function main() {
 
 
 function activateBtns() {
-    
     const nums = document.querySelectorAll('.num');
     nums.forEach((num) => num.addEventListener('click', populateDisplay));
-    const subtractBtn = document.getElementById('subtract-btn');
-    subtractBtn.addEventListener('click', doOtherOperation)
+    const operatorBtns = document.querySelectorAll('.operator');
     
-}
-
-function doOtherOperation() {
-    console.log(a);
 }
 
 function doOperation() {
-    console.log(a);
     return;
 }
 
