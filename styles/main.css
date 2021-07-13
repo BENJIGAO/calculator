@@ -1,0 +1,19 @@
+body {
+    height: 100vh;
+}
+
+#calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: 
+    "display display display";
+    height: 500px;
+    width: 300px;
+}
+
+#number-display {
+    grid-area: display;
+    border: solid 1px;
+    text-align: end;
+}
