@@ -30,6 +30,7 @@ function operate(num1, num2, operator) {
 
 function doOperation(e) {
     const calcDisplay = document.getElementById('number-display');
+    // What happens if user presses an two operators consecutively
     if (calcDisplay.dataset.num2 == '0') return;
     let result = operate(
         +calcDisplay.dataset.num1,
@@ -69,6 +70,7 @@ function activateBtns() {
 
 function populateDisplay(e) {
     const calcDisplay = document.getElementById('number-display');
+    if (calcDisplay.textContent == '0') calcDisplay.textContent = '';
     const newNum = e.target.textContent;
     calcDisplay.textContent += newNum;
     calcDisplay.dataset.num2 += newNum;
