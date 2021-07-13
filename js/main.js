@@ -30,3 +30,14 @@ function operate(num1, num2, operator) {
             break;
     }
 }
+
+function activateBtns() {
+    const nums = document.querySelectorAll('.num');
+    nums.forEach((num) => num.addEventListener('click', populateDisplay));
+}
+
+function populateDisplay(e) {
+    document.getElementById('number-display').textContent += e.target.textContent;
+}
+
+activateBtns();
