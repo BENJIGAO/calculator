@@ -35,9 +35,13 @@ function doOperation(e) {
         +calcDisplay.dataset.num2,
         calcDisplay.dataset.operator
     );
-    calcDisplay.dataset.num1 = calcDisplay.textContent = result;
-    calcDisplay.dataset.operator = e.target.getAttribute('id');
-    calcDisplay.dataset.num2 = '0';
+    updateDisplay(calcDisplay, result, e.target.getAttribute('id'));
+}
+
+function updateDisplay(display, result, operator) {
+    display.dataset.num1 = display.textContent = result;
+    display.dataset.operator = operator;
+    display.dataset.num2 = '0';
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => {
         num.removeEventListener('click', populateDisplay);
