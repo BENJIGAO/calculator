@@ -1,4 +1,130 @@
+addKeyboardSupport();
 
+function addKeyboardSupport() {
+    document.addEventListener('keydown', executeKeyIfValid)
+}
+
+function executeKeyIfValid(e) {
+    const keyPressed = e.key;
+    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const operators = ['+', '-', 'x', '/', '='];
+    switch (true) {
+        case nums.includes(keyPressed):
+            populateDisplay({
+                target: {
+                    textContent: keyPressed,
+                }
+            })
+            return;
+        case operators.includes(keyPressed):
+            if (keyPressed == 'x') {
+                doOperation({
+                    target: {
+                        getAttribute: function (irrelevantStr) {
+                            return '*';
+                    }
+                    }
+                })
+                return
+            }
+            else if (keyPressed == '=') {
+                doOperation({
+                    target: {
+                        getAttribute: function (irrelevantStr) {
+                            return '=';
+                    }
+                    }
+                })
+            }
+            else {
+                doOperation({
+                    target: {
+                        getAttribute: function (irrelevantStr) {
+                            return keyPressed;
+                    }
+                    }
+                })
+            }
+    }
+}
+
+function alterDisplayAndData(display, result) {
+    hideReminderMessage();
+    display.textContent = result;
+    if (result === 'ERROR') result = '0';
+    display.dataset.num2 = result;
+    display.dataset.operator = '+';
+    display.dataset.num1 = '0';
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => {
+        num.removeEventListener('click', populateDisplay);
+        num.addEventListener('click', partialReset);
+        num.addEventListener('click', populateDisplay);
+    });
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.addEventListener('click', partialReset);
+    dotBtn.addEventListener('click', addDot);
+    document.removeEventListener('keydown', executeKeyIfValid);
+    document.addEventListener('keydown', keyPartialReset);
+    document.addEventListener('keydown', executeKeyIfValid);
+}
+
+function partialReset() {
+    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    if (nums.includes(e.key)) {
+        partialReset();
+    }
+
+}
+
+function updateDisplayAndData(display, result, operator) {
+    display.textContent = result;
+    if (result === 'ERROR') result = '0';
+    display.dataset.num1 = result;
+    display.dataset.operator = operator;
+    display.dataset.num2 = '0';
+    const nums = document.querySelectorAll('.num');
+    document.removeEventListener('keydown', executeKeyIfValid);
+    document.addEventListener('keydown', keyResetDisplay);
+    document.addEventListener('keydown', executeKeyIfValid);
+    nums.forEach(num => {
+        num.removeEventListener('click', populateDisplay);
+        num.removeEventListener('click', partialReset);
+        num.addEventListener('click', resetDisplay);
+        num.addEventListener('click', populateDisplay);
+    })
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.removeEventListener('click', partialReset);
+    dotBtn.addEventListener('click', resetDisplay);
+    dotBtn.addEventListener('click', addDot);
+}
+
+function keyResetDisplay(e) {
+    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    if (nums.includes(e.key)) {
+        resetDisplay();
+    }
+}
+
+function doOperation(e) {
+    hideReminderMessage();
+    const calcDisplay = document.getElementById('number-display');
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    let oldOperator = calcDisplay.dataset.operator;
+    let newOperator = e.target.getAttribute('id');
+    // What happens if user presses an two operators consecutively (not dividing by 0)
+    if (num2 == '0' && oldOperator != '/') return;
+    let result = operate(+num1, +num2, oldOperator);
+    if (newOperator != '=') {
+        updateDisplayAndData(calcDisplay, result, newOperator);
+    }
+    else {
+        alterDisplayAndData(calcDisplay, result);
+    }
+}
 activateBtns();
 
 function activateBtns() {
@@ -85,43 +211,6 @@ function switchSign() {
     calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
 }
 
-function doOperation(e) {
-    hideReminderMessage();
-    const calcDisplay = document.getElementById('number-display');
-    let num1 = calcDisplay.dataset.num1;
-    let num2 = calcDisplay.dataset.num2;
-    let oldOperator = calcDisplay.dataset.operator;
-    let newOperator = e.target.getAttribute('id');
-    // What happens if user presses an two operators consecutively (not dividing by 0)
-    if (num2 == '0' && oldOperator != '/') return;
-    let result = operate(+num1, +num2, oldOperator);
-    if (newOperator != '=') {
-        updateDisplayAndData(calcDisplay, result, newOperator);
-    }
-    else {
-        alterDisplayAndData(calcDisplay, result);
-    }
-}
-
-function alterDisplayAndData(display, result) {
-    hideReminderMessage();
-    display.textContent = result;
-    if (result === 'ERROR') result = '0';
-    display.dataset.num2 = result;
-    display.dataset.operator = '+';
-    display.dataset.num1 = '0';
-    const nums = document.querySelectorAll('.num');
-    nums.forEach(num => {
-        num.removeEventListener('click', populateDisplay);
-        num.addEventListener('click', partialReset);
-        num.addEventListener('click', populateDisplay);
-    });
-    const dotBtn = document.getElementById('dot');
-    dotBtn.removeEventListener('click', addDot);
-    dotBtn.addEventListener('click', partialReset);
-    dotBtn.addEventListener('click', addDot);
-}
-
 function partialReset() {
     const calcDisplay = document.getElementById('number-display');
     calcDisplay.textContent = '';
@@ -131,28 +220,11 @@ function partialReset() {
     nums.forEach(num => num.removeEventListener('click', partialReset))
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', partialReset);
+    document.removeEventListener('keydown', partialReset);
 
 }
 
-function updateDisplayAndData(display, result, operator) {
-    display.textContent = result;
-    if (result === 'ERROR') result = '0';
-    display.dataset.num1 = result;
-    display.dataset.operator = operator;
-    display.dataset.num2 = '0';
-    const nums = document.querySelectorAll('.num');
-    nums.forEach(num => {
-        num.removeEventListener('click', populateDisplay);
-        num.removeEventListener('click', partialReset);
-        num.addEventListener('click', resetDisplay);
-        num.addEventListener('click', populateDisplay);
-    })
-    const dotBtn = document.getElementById('dot');
-    dotBtn.removeEventListener('click', addDot);
-    dotBtn.removeEventListener('click', partialReset);
-    dotBtn.addEventListener('click', resetDisplay);
-    dotBtn.addEventListener('click', addDot);
-}
+
 
 function resetDisplay() {
     const nums = document.querySelectorAll('.num');
@@ -160,6 +232,7 @@ function resetDisplay() {
     nums.forEach(num => num.removeEventListener('click', resetDisplay));
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', resetDisplay);
+    document.removeEventListener('keydown', keyResetDisplay);
     
 }
 
