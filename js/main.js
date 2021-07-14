@@ -86,6 +86,7 @@ function updateDisplayAndData(display, result, operator) {
     display.dataset.num2 = '0';
     const nums = document.querySelectorAll('.num');
     document.removeEventListener('keydown', executeKeyIfValid);
+    document.removeEventListener('keydown', keyPartialReset);
     document.addEventListener('keydown', keyResetDisplay);
     document.addEventListener('keydown', executeKeyIfValid);
     nums.forEach(num => {
