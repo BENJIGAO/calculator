@@ -149,6 +149,12 @@ function resetCalculator() {
     calcDisplay.textContent = ' 0'
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => num.removeEventListener('click', partialReset));
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', partialReset);
+    
+
 }
 
 function populateDisplay(e) {
