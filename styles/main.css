@@ -7,9 +7,15 @@ body {
 #calculator-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 
-    "display display display display";
+    "display display display display"
+    "clear clear backspace backspace"
+    ". . . ."
+    ". . . ."
+    ". . . ."
+    ". . . ."
+    "zero zero . .";
     height: 500px;
     width: 300px;
 }
@@ -28,3 +34,9 @@ body {
     visibility: hidden;
     color: red;
 }
+
+#clear {grid-area: clear}
+#backspace {grid-area: backspace}
+#zero {grid-area: zero; text-align: left;}
+
+
