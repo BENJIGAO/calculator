@@ -35,26 +35,50 @@ function doOperation(e) {
     let num2 = +calcDisplay.dataset.num2;
     let oldOperator = calcDisplay.dataset.operator;
     let newOperator = e.target.getAttribute('id');
-    // What happens if user presses an two operators consecutively
-    if (num2 == 0) return;
+    // What happens if user presses an two operators consecutively (not dividing by 0)
+    if (num2 == 0 && oldOperator != '/') return;
     let result = operate(num1, num2, oldOperator);
     if (newOperator != '=') {
         updateDisplayAndData(calcDisplay, result, newOperator);
     }
     else {
-        alterDisplay(calcDisplay, result);
+        alterDisplayAndData(calcDisplay, result);
     }
+}
+
+function alterDisplayAndData(display, result) {
+    display.textContent = result;
+    if (result === 'ERROR') result = '0';
+    display.dataset.num2 = result;
+    display.dataset.operator = '+';
+    display.dataset.num1 = '0';
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => {
+        num.removeEventListener('click', populateDisplay);
+        num.addEventListener('click', partialReset);
+        num.addEventListener('click', populateDisplay);
+    })
+}
+
+function partialReset() {
+    const calcDisplay = document.getElementById('number-display');
+    calcDisplay.textContent = calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
+    calcDisplay.dataset.operator = '+';
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => num.removeEventListener('click', partialReset))
+
 }
 
 function updateDisplayAndData(display, result, operator) {
     display.textContent = result;
     if (result === 'ERROR') result = '0';
-    display.dataset.num1 = result
+    display.dataset.num1 = result;
     display.dataset.operator = operator;
     display.dataset.num2 = '0';
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => {
         num.removeEventListener('click', populateDisplay);
+        num.removeEventListener('click', partialReset);
         num.addEventListener('click', resetDisplay);
         num.addEventListener('click', populateDisplay);
     })
