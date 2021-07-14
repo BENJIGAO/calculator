@@ -8,6 +8,8 @@ button:not(.non-circle) {
     border-radius: 50%;
     height: 60px;
     width: 60px;
+    align-self: center;
+    justify-self: center;
 }
 
 #calculator-grid {
