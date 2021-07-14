@@ -18,6 +18,10 @@ body {
     grid-area: display;
     border: solid 1px;
     text-align: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 
 #reminder-message {
