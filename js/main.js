@@ -32,6 +32,10 @@ function addDot() {
     calcDisplay.dataset.num2 += '.';
 }
 
+function hideReminderMessage() {
+    document.getElementById('reminder-message').style.visibility = 'hidden';
+}
+
 function hasOneDot(display) {
     return display.textContent.includes('.')
 } 
@@ -49,6 +53,7 @@ function switchSign() {
 }
 
 function doOperation(e) {
+    hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
     let num1 = +calcDisplay.dataset.num1;
     let num2 = +calcDisplay.dataset.num2;
@@ -66,6 +71,7 @@ function doOperation(e) {
 }
 
 function alterDisplayAndData(display, result) {
+    hideReminderMessage();
     display.textContent = result;
     if (result === 'ERROR') result = '0';
     display.dataset.num2 = result;
@@ -116,6 +122,7 @@ function resetCalculator() {
 }
 
 function populateDisplay(e) {
+    hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
     // Condition for initial state of calculator
     if (calcDisplay.textContent == '0') calcDisplay.textContent = '';
