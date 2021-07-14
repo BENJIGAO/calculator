@@ -18,9 +18,18 @@ function activateBtns() {
 
     const dotBtn = document.getElementById('dot');
     dotBtn.addEventListener('click', addDot);
+
+    const backspaceBtn = document.getElementById('backspace');
+    backspaceBtn.addEventListener('click', backspace);
 }
 
+function backspace() {
+    const calcDisplay = document.getElementById('number-display');
+    // Figure out how to remove last character of a string (don't remove if textContent is only '0')
+
+}
 function addDot() {
+    // Find way to allow the dot to be the first character
     const calcDisplay = document.getElementById('number-display');
     if (hasOneDot(calcDisplay)) {
         const reminderMessage = document.getElementById('reminder-message');
