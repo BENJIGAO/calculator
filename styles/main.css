@@ -4,6 +4,12 @@ body {
     justify-content: center;
 }
 
+button:not(.non-circle) {
+    border-radius: 50%;
+    height: 60px;
+    width: 60px;
+}
+
 #calculator-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
