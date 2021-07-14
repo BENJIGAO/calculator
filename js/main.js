@@ -22,18 +22,20 @@ function activateBtns() {
 
 function addDot() {
     const calcDisplay = document.getElementById('number-display');
-    let 
-    
-    if (!checkDot) {
-        
-
+    if (hasOneDot(calcDisplay)) {
+        const reminderMessage = document.getElementById('reminder-message');
+        reminderMessage.style.visibility = 'visible';
+        reminderMessage.textContent = 'Only Enter one Dot';
+        return;
     }
-    
+    calcDisplay.textContent += '.';
+    calcDisplay.dataset.num2 += '.';
 }
 
-function checkDot() {
+function hasOneDot(display) {
+    return display.textContent.includes('.')
+} 
 
-}
 function convertPercent() {
     const calcDisplay = document.getElementById('number-display');
     const percentNum = String(+calcDisplay.dataset.num2 / 100);

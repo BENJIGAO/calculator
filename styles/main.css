@@ -14,8 +14,13 @@ body {
     width: 300px;
 }
 
-#number-display {
+#display-container {
     grid-area: display;
     border: solid 1px;
     text-align: end;
+}
+
+#reminder-message {
+    visibility: hidden;
+    color: red;
 }
