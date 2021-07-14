@@ -25,7 +25,14 @@ function activateBtns() {
 
 function backspace() {
     const calcDisplay = document.getElementById('number-display');
-    // Figure out how to remove last character of a string (don't remove if textContent is only '0')
+    let currentDisplay = calcDisplay.textContent
+    if (currentDisplay != ' 0') {
+        let tmpArr = currentDisplay.split('');
+        tmpArr.pop();
+        let newDisplay = tmpArr.join('');
+        calcDisplay.textContent = newDisplay;
+        calcDisplay.dataset.num2 = '0' + newDisplay;
+    }
 
 }
 function addDot() {
@@ -153,8 +160,6 @@ function resetCalculator() {
     nums.forEach(num => num.removeEventListener('click', partialReset));
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', partialReset);
-    
-
 }
 
 function populateDisplay(e) {
