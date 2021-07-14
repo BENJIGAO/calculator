@@ -14,10 +14,27 @@ function activateBtns() {
     switchSignBtn.addEventListener('click', switchSign);
 
     const percentBtn = document.getElementById('percent');
-    percentBtn.addEventListener('click', makePercent)
+    percentBtn.addEventListener('click', convertPercent);
+
+    const dotBtn = document.getElementById('dot');
+    dotBtn.addEventListener('click', addDot);
 }
 
-function makePercent() {
+function addDot() {
+    const calcDisplay = document.getElementById('number-display');
+    let 
+    
+    if (!checkDot) {
+        
+
+    }
+    
+}
+
+function checkDot() {
+
+}
+function convertPercent() {
     const calcDisplay = document.getElementById('number-display');
     const percentNum = String(+calcDisplay.dataset.num2 / 100);
     calcDisplay.dataset.num2 = calcDisplay.textContent = percentNum;
@@ -133,6 +150,3 @@ function operate(num1, num2, operator) {
             return num2 != 0 ? divide(num1, num2) : 'ERROR';
     }
 }
-
-
-
