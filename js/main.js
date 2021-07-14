@@ -31,12 +31,19 @@ function backspace() {
 function addDot() {
     // Find way to allow the dot to be the first character
     const calcDisplay = document.getElementById('number-display');
+    if (calcDisplay.textContent == '0' || calcDisplay.dataset.num2 == '0') {
+        calcDisplay.textContent = '.';
+        calcDisplay.dataset.num2 += '.';
+        return;
+    }
+    
     if (hasOneDot(calcDisplay)) {
         const reminderMessage = document.getElementById('reminder-message');
         reminderMessage.style.visibility = 'visible';
         reminderMessage.textContent = 'Only Enter one Dot';
         return;
     }
+    
     calcDisplay.textContent += '.';
     calcDisplay.dataset.num2 += '.';
 }
@@ -91,7 +98,11 @@ function alterDisplayAndData(display, result) {
         num.removeEventListener('click', populateDisplay);
         num.addEventListener('click', partialReset);
         num.addEventListener('click', populateDisplay);
-    })
+    });
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.addEventListener('click', partialReset);
+    dotBtn.addEventListener('click', addDot);
 }
 
 function partialReset() {
@@ -100,6 +111,8 @@ function partialReset() {
     calcDisplay.dataset.operator = '+';
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => num.removeEventListener('click', partialReset))
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', partialReset);
 
 }
 
@@ -116,12 +129,20 @@ function updateDisplayAndData(display, result, operator) {
         num.addEventListener('click', resetDisplay);
         num.addEventListener('click', populateDisplay);
     })
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.removeEventListener('click', partialReset);
+    dotBtn.addEventListener('click', resetDisplay);
+    dotBtn.addEventListener('click', addDot);
 }
 
 function resetDisplay() {
     const nums = document.querySelectorAll('.num');
     document.getElementById('number-display').textContent = '';
-    nums.forEach(num => num.removeEventListener('click', resetDisplay))
+    nums.forEach(num => num.removeEventListener('click', resetDisplay));
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', resetDisplay);
+    
 }
 
 function resetCalculator() {
