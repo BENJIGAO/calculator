@@ -1,3 +1,4 @@
+
 activateBtns();
 
 function activateBtns() {
@@ -21,6 +22,16 @@ function activateBtns() {
 
     const backspaceBtn = document.getElementById('backspace');
     backspaceBtn.addEventListener('click', backspace);
+
+    const squaredBtn = document.getElementById('squared');
+    squaredBtn.addEventListener('click', square);
+}
+
+function square() {
+    const calcDisplay = document.getElementById('number-display');
+    const squaredNum = +calcDisplay.textContent * +calcDisplay.textContent;
+    calcDisplay.textContent = String(squaredNum);
+    calcDisplay.dataset.num2 = '0' + squaredNum;
 }
 
 function backspace() {
@@ -113,7 +124,8 @@ function alterDisplayAndData(display, result) {
 
 function partialReset() {
     const calcDisplay = document.getElementById('number-display');
-    calcDisplay.textContent = calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
+    calcDisplay.textContent = '';
+    calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => num.removeEventListener('click', partialReset))
