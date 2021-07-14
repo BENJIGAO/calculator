@@ -3,14 +3,26 @@ activateBtns();
 function activateBtns() {
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => num.addEventListener('click', populateDisplay));
+
     const operatorBtns = document.querySelectorAll('.operator');
-    operatorBtns.forEach(operatorBtn => operatorBtn.addEventListener('click', doOperation))
+    operatorBtns.forEach(operatorBtn => operatorBtn.addEventListener('click', doOperation));
+
     const clearBtn = document.getElementById('clear');
     clearBtn.addEventListener('click', resetCalculator);
+
     const switchSignBtn = document.getElementById('switch-sign');
     switchSignBtn.addEventListener('click', switchSign);
+
+    const percentBtn = document.getElementById('percent');
+    percentBtn.addEventListener('click', makePercent)
 }
 
+function makePercent() {
+    const calcDisplay = document.getElementById('number-display');
+    calcDisplay.dataset.num2 = String(+calcDisplay.dataset.num2 * -1);
+    calcDisplay.textContent = calcDisplay.dataset.num2;
+
+}
 function switchSign() {
     const calcDisplay = document.getElementById('number-display');
     calcDisplay.dataset.num2 = String(+calcDisplay.dataset.num2 * -1);
@@ -20,7 +32,7 @@ function switchSign() {
 function doOperation(e) {
     const calcDisplay = document.getElementById('number-display');
     // What happens if user presses an two operators consecutively
-    if (calcDisplay.dataset.num2 == '0') return;
+    if (calcDisplay.dataset.num2 == '0' && e.target.getAttribute('id') == '=') return;
     let result = operate(
         +calcDisplay.dataset.num1,
         +calcDisplay.dataset.num2,
@@ -34,7 +46,7 @@ function updateDisplay(display, result, operator) {
     if (result === 'ERROR') result = '0';
     display.dataset.num1 = result
     // Makes sure operator != equals sign
-    if (operator) display.dataset.operator = operator;
+    if (operator != '=') display.dataset.operator = operator;
     display.dataset.num2 = '0';
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => {
