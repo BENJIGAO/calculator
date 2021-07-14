@@ -88,13 +88,13 @@ function switchSign() {
 function doOperation(e) {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    let num1 = +calcDisplay.dataset.num1;
-    let num2 = +calcDisplay.dataset.num2;
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
     let oldOperator = calcDisplay.dataset.operator;
     let newOperator = e.target.getAttribute('id');
     // What happens if user presses an two operators consecutively (not dividing by 0)
-    if (num2 == 0 && oldOperator != '/') return;
-    let result = operate(num1, num2, oldOperator);
+    if (num2 == '0' && oldOperator != '/') return;
+    let result = operate(+num1, +num2, oldOperator);
     if (newOperator != '=') {
         updateDisplayAndData(calcDisplay, result, newOperator);
     }
@@ -193,11 +193,11 @@ function subtract(a, b) {
 }
 
 function multiply(a, b) {
-    return a * b;
+    return (a * 10) * (b * 10) / 100;
 }
 
 function divide(a, b) {
-    return a / b;
+    return (a * 10) / (b * 10);
 }
 
 function operate(num1, num2, operator) {

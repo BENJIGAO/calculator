@@ -22,7 +22,7 @@ body {
 
 #display-container {
     grid-area: display;
-    overflow: hidden
+    overflow: hidden;
     border: solid 1px;
     text-align: end;
     display: flex;
