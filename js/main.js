@@ -29,9 +29,8 @@ function backspace() {
 
 }
 function addDot() {
-    // Find way to allow the dot to be the first character
     const calcDisplay = document.getElementById('number-display');
-    if (calcDisplay.textContent == '0' || calcDisplay.dataset.num2 == '0') {
+    if (calcDisplay.textContent == ' 0' || calcDisplay.dataset.num2 == '0') {
         calcDisplay.textContent = '.';
         calcDisplay.dataset.num2 += '.';
         return;
@@ -147,7 +146,8 @@ function resetDisplay() {
 
 function resetCalculator() {
     const calcDisplay = document.getElementById('number-display');
-    calcDisplay.textContent = calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
+    calcDisplay.textContent = ' 0'
+    calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
 }
 
@@ -155,7 +155,7 @@ function populateDisplay(e) {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
     // Condition for initial state of calculator
-    if (calcDisplay.textContent == '0') calcDisplay.textContent = '';
+    if (calcDisplay.textContent == ' 0') calcDisplay.textContent = '';
     const newNum = e.target.textContent;
     calcDisplay.textContent += newNum;
     calcDisplay.dataset.num2 += newNum;
