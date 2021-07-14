@@ -70,7 +70,7 @@ function alterDisplayAndData(display, result) {
     document.addEventListener('keydown', executeKeyIfValid);
 }
 
-function partialReset() {
+function keyPartialReset(e) {
     const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     if (nums.includes(e.key)) {
         partialReset();
@@ -220,7 +220,7 @@ function partialReset() {
     nums.forEach(num => num.removeEventListener('click', partialReset))
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', partialReset);
-    document.removeEventListener('keydown', partialReset);
+    document.removeEventListener('keydown', keyPartialReset);
 
 }
 
