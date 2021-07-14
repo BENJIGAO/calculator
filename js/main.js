@@ -19,26 +19,31 @@ function activateBtns() {
 
 function makePercent() {
     const calcDisplay = document.getElementById('number-display');
-    calcDisplay.dataset.num2 = String(+calcDisplay.dataset.num2 * -1);
-    calcDisplay.textContent = calcDisplay.dataset.num2;
-
+    const percentNum = String(+calcDisplay.dataset.num2 / 100);
+    calcDisplay.dataset.num2 = calcDisplay.textContent = percentNum;
 }
+
 function switchSign() {
     const calcDisplay = document.getElementById('number-display');
-    calcDisplay.dataset.num2 = String(+calcDisplay.dataset.num2 * -1);
-    calcDisplay.textContent = calcDisplay.dataset.num2;
+    const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
+    calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
 }
 
 function doOperation(e) {
     const calcDisplay = document.getElementById('number-display');
+    let num1 = +calcDisplay.dataset.num1;
+    let num2 = +calcDisplay.dataset.num2;
+    let operator = calcDisplay.dataset.operator;
     // What happens if user presses an two operators consecutively
-    if (calcDisplay.dataset.num2 == '0' && e.target.getAttribute('id') == '=') return;
-    let result = operate(
-        +calcDisplay.dataset.num1,
-        +calcDisplay.dataset.num2,
-        calcDisplay.dataset.operator
-    );
-    updateDisplay(calcDisplay, result, e.target.getAttribute('id'));
+    if (num2 == 0) return;
+    let result = operate(num1, num2, operator);
+    if (operator != '=') {
+        updateDisplay(calcDisplay, result, e.target.getAttribute('id'));
+    }
+    else {
+        alterDisplay(calcDisplay, result);
+    }
+    
 }
 
 function updateDisplay(display, result, operator) {
