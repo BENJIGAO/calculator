@@ -11,8 +11,8 @@ button {
 
 button:not(.non-circle-bottom):not(.non-circle-top) {
     border-radius: 50%;
-    height: 70px;
-    width: 70px;
+    height: 65px;
+    width: 65px;
     align-self: center;
     justify-self: center;
 }
@@ -20,7 +20,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 #calculator-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 40px 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 150px 1fr 40px 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 
     "display display display display"
     "display display display display"
@@ -35,7 +35,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     width: 350px;
     background-color: black;
     border-radius: 25px;
-    padding: 5px 10px 20px 10px;
+    padding: 5px 10px 30px 10px;
 }
 
 #display-container {
@@ -67,6 +67,19 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     width: 84%;
     justify-self: center;
     align-self: center;
+}
+
+.lightgray {
+    background-color: #ccc8c8;
+}
+
+.orange {
+    background-color: orange;
+}
+
+.darkgray {
+    background-color: darkgray;
+
 }
 
 .non-circle-bottom {
