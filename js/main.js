@@ -1,11 +1,11 @@
 addKeyboardSupport();
+activateBtns();
 
 function addKeyboardSupport() {
     document.addEventListener('keydown', executeKeyIfValid)
 }
 
 function executeKeyIfValid(e) {
-    console.log(e.key)
     const keyPressed = e.key;
     const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const operators = ['+', '-', 'x', '/', '='];
@@ -93,7 +93,8 @@ function alterDisplayAndData(display, result) {
 }
 
 function checkSpecialCases(display) {
-    return display.textContent == '-' ? true : false;
+    const text = display.textContent;
+    if (text == '-' || text.includes('e-') || text[text.length - 1] == 'e') return true;
 }
 
 function keyPartialReset(e) {
@@ -153,7 +154,7 @@ function doOperation(e) {
         alterDisplayAndData(calcDisplay, result);
     }
 }
-activateBtns();
+
 
 function activateBtns() {
     const nums = document.querySelectorAll('.num');
@@ -184,7 +185,7 @@ function activateBtns() {
 function square() {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    const squaredNum = (+calcDisplay.textContent * +calcDisplay.textContent).toFixed(8);
+    const squaredNum = +(+calcDisplay.textContent * +calcDisplay.textContent).toFixed(8);
     calcDisplay.textContent = String(squaredNum);
     calcDisplay.dataset.num2 = '0' + squaredNum;
 }
@@ -235,7 +236,7 @@ function convertPercent() {
     if (isTinyNum(percentNum)) {
         const reminderMessage = document.getElementById('reminder-message');
         reminderMessage.style.visibility = 'visible';
-        reminderMessage.textContent = 'Calculator only works to 8 eight decimals. Please input something else';
+        reminderMessage.textContent = 'Calculator only works to 8 eight decimals. Please input something else.';
         return;
     }
     hideReminderMessage();
@@ -277,6 +278,7 @@ function resetDisplay() {
 }
 
 function resetCalculator() {
+    hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
     calcDisplay.textContent = ' 0'
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
