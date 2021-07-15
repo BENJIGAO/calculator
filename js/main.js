@@ -137,7 +137,7 @@ function configureDotBtnForOperator() {
 }
 
 function updateDisplayAndData(display, result, operator) {
-    if (isSpecialCase(display) || result == 'ERROR') {
+    if (checkSpecialCase(display) || result == 'ERROR') {
         display.textContent = 'ERROR';
         result = 0;
     }
@@ -177,7 +177,7 @@ function configureDotBtnForEqualsSign() {
 }
 
 function alterDisplayAndData(display, result) {
-    if (isSpecialCase(display) || result == 'ERROR') {
+    if (checkSpecialCase(display) || result == 'ERROR') {
         display.textContent = 'ERROR';
         result = 0;
     }
@@ -193,12 +193,13 @@ function alterDisplayAndData(display, result) {
     configureDotBtnForEqualsSign();
 }
 
-
-
-function isSpecialCase(display) {
+function checkSpecialCase(display) {
     const text = display.textContent;
-    const l = text.length - 1
-    if (text == '-' || text[l] == '-' && text[l - 1] == 'e' || text[l] == 'e' || text.includes('E')) return true;
+    const lastChar = text.length - 1;
+    if (text == '-' || text[lastChar] == '-' && text[lastChar - 1] == 'e' || text[lastChar] == 'e' || text.includes('E') || text.includes('e-') && text[lastChar - 1] != '-') {
+        display.textContent = 'ERROR';
+        return true;
+    }
 }
 
 function keyPartialReset(e) {
@@ -216,23 +217,24 @@ function keyResetDisplay(e) {
     }
 }
 
-
-
-
-
-
 function square() {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    const squaredNum = +(+calcDisplay.textContent * +calcDisplay.textContent).toFixed(8);
-    calcDisplay.textContent = String(squaredNum);
-    calcDisplay.dataset.num2 = '0' + squaredNum;
+    if (checkSpecialCase(calcDisplay)) return;
+    const squaredNum = +calcDisplay.textContent * +calcDisplay.textContent;
+    if (isTinyNum(squaredNum)) {
+        outputTinyNumMessage();
+        return;
+    }
+    newStringNum = +squaredNum.toFixed(8);
+    calcDisplay.textContent = newStringNum;
+    calcDisplay.dataset.num2 = '0' + newStringNum;
 }
 
 function backspace() {
     const calcDisplay = document.getElementById('number-display');
-    let currentDisplay = calcDisplay.textContent
-    if (currentDisplay != ' 0') {
+    let currentDisplay = calcDisplay.textContent;
+    if (!isInitialState(calcDisplay)) {
         let tmpArr = currentDisplay.split('');
         tmpArr.pop();
         let newDisplay = tmpArr.join('');
@@ -244,7 +246,8 @@ function backspace() {
 function addDot() {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    if (calcDisplay.textContent == ' 0' || calcDisplay.dataset.num2 == '0') {
+    if (checkSpecialCase(calcDisplay)) return;
+    if (isInitialState(calcDisplay) || calcDisplay.dataset.num2 == '0') {
         calcDisplay.textContent = '.';
         calcDisplay.dataset.num2 += '.';
         return;
@@ -270,16 +273,21 @@ function hasOneDot(display) {
 } 
 
 function convertPercent() {
+    hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
     const percentNum = +(+calcDisplay.dataset.num2 / 100).toFixed(8);
     if (isTinyNum(percentNum)) {
-        const reminderMessage = document.getElementById('reminder-message');
-        reminderMessage.style.visibility = 'visible';
-        reminderMessage.textContent = 'Calculator only works to 8 eight decimals. Please input something else.';
+        outputTinyNumMessage();
         return;
     }
-    hideReminderMessage();
     calcDisplay.dataset.num2 = calcDisplay.textContent = String(percentNum);
+}
+
+function outputTinyNumMessage() {
+    const reminderMessage = document.getElementById('reminder-message');
+    reminderMessage.style.visibility = 'visible';
+    reminderMessage.textContent = 'Calculator only works to 8 eight decimals. Please input something else.';
 }
 
 function isTinyNum(num) {
@@ -289,17 +297,14 @@ function isTinyNum(num) {
 function switchSign() {
     hideReminderMessage()
     const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
     const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
-    if (calcDisplay.textContent != ' 0') {
+    if (!isInitialState(calcDisplay)) {
         calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
     }
 }
 
-function partialReset() {
-    const calcDisplay = document.getElementById('number-display');
-    calcDisplay.textContent = '';
-    calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
-    calcDisplay.dataset.operator = '+';
+function removePartialResetFromAll() {
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => num.removeEventListener('click', partialReset))
     const dotBtn = document.getElementById('dot');
@@ -307,13 +312,25 @@ function partialReset() {
     document.removeEventListener('keydown', keyPartialReset);
 }
 
-function resetDisplay() {
+function partialReset() {
+    const calcDisplay = document.getElementById('number-display');
+    calcDisplay.textContent = '';
+    calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
+    calcDisplay.dataset.operator = '+';
+    removePartialResetFromAll();
+}
+
+function removeResetDisplayFromAll() {
     const nums = document.querySelectorAll('.num');
-    document.getElementById('number-display').textContent = '';
     nums.forEach(num => num.removeEventListener('click', resetDisplay));
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', resetDisplay);
     document.removeEventListener('keydown', keyResetDisplay);
+}
+
+function resetDisplay() {
+    document.getElementById('number-display').textContent = '';
+    removeResetDisplayFromAll();
 }
 
 function resetCalculator() {
@@ -322,15 +339,14 @@ function resetCalculator() {
     calcDisplay.textContent = ' 0'
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
-    const nums = document.querySelectorAll('.num');
-    nums.forEach(num => num.removeEventListener('click', partialReset));
-    const dotBtn = document.getElementById('dot');
-    dotBtn.removeEventListener('click', partialReset);
+    removePartialResetFromAll();
+    
 }
 
 function populateDisplay(e) {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
     let appendedNum = e.target.textContent;
     calcDisplay.textContent += appendedNum;
@@ -345,8 +361,6 @@ function isConsecutiveOperator(num, operator) {
     // num has to be string or else entering a '0' still returns true even though data-num2 = '00' (logs as 0 as int)
     return num == '0' && operator != '/' ? true : false
 }
-
-
 
 function add(a, b) {
     return +(a + b).toFixed(8);
