@@ -54,6 +54,9 @@ function executeKeyIfValid(e) {
         case keyPressed == 'Backspace':
             backspace();
             return;
+        case keyPressed == 's':
+            switchSign();
+            return;
 
     }
 }
@@ -225,7 +228,9 @@ function convertPercent() {
 function switchSign() {
     const calcDisplay = document.getElementById('number-display');
     const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
-    calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
+    if (calcDisplay.textContent != ' 0') {
+        calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
+    }
 }
 
 function partialReset() {
