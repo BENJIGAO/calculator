@@ -5,6 +5,7 @@ function addKeyboardSupport() {
 }
 
 function executeKeyIfValid(e) {
+    console.log(e.key)
     const keyPressed = e.key;
     const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const operators = ['+', '-', 'x', '/', '='];
@@ -35,6 +36,7 @@ function executeKeyIfValid(e) {
                     }
                     }
                 })
+                return;
             }
             else {
                 doOperation({
@@ -44,7 +46,13 @@ function executeKeyIfValid(e) {
                     }
                     }
                 })
+                return;
             }
+        case keyPressed == '.':
+            addDot();
+            return;
+        case keyPressed == 'a':
+            return;
     }
 }
 
@@ -71,8 +79,8 @@ function alterDisplayAndData(display, result) {
 }
 
 function keyPartialReset(e) {
-    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    if (nums.includes(e.key)) {
+    const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+    if (numsAndDot.includes(e.key)) {
         partialReset();
     }
 
@@ -103,8 +111,8 @@ function updateDisplayAndData(display, result, operator) {
 }
 
 function keyResetDisplay(e) {
-    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    if (nums.includes(e.key)) {
+    const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+    if (numsAndDot.includes(e.key)) {
         resetDisplay();
     }
 }
@@ -222,7 +230,6 @@ function partialReset() {
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', partialReset);
     document.removeEventListener('keydown', keyPartialReset);
-
 }
 
 
