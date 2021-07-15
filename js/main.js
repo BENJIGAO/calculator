@@ -137,13 +137,14 @@ function configureDotBtnForOperator() {
 }
 
 function updateDisplayAndData(display, result, operator) {
-    if (checkSpecialCase(display) || result == 'ERROR') {
+    if (checkSpecialCase(display)) return
+    else if (result == 'ERROR') {
         display.textContent = 'ERROR';
-        result = 0;
-    }
-    else {
-        display.textContent = result;
-    }
+        outputClearMessage();
+        return;
+    } 
+    display.textContent = result;
+    
     display.dataset.num1 = result;
     display.dataset.operator = operator;
     display.dataset.num2 = '0';
@@ -177,13 +178,13 @@ function configureDotBtnForEqualsSign() {
 }
 
 function alterDisplayAndData(display, result) {
-    if (checkSpecialCase(display) || result == 'ERROR') {
+    if (checkSpecialCase(display)) return
+    else if (result == 'ERROR') {
         display.textContent = 'ERROR';
-        result = 0;
-    }
-    else {
-        display.textContent = result;
-    }
+        outputClearMessage();
+        return;
+    } 
+    display.textContent = result;
     display.dataset.num2 = result;
     display.dataset.operator = '+';
     display.dataset.num1 = '0';
@@ -198,6 +199,7 @@ function checkSpecialCase(display) {
     const lastChar = text.length - 1;
     if (text == '-' || text[lastChar] == '-' && text[lastChar - 1] == 'e' || text[lastChar] == 'e' || text.includes('E') || text.includes('e-') && text[lastChar - 1] != '-') {
         display.textContent = 'ERROR';
+        outputClearMessage();
         return true;
     }
 }
@@ -217,6 +219,12 @@ function keyResetDisplay(e) {
     }
 }
 
+function outputClearMessage() {
+    const reminderMessage = document.getElementById('reminder-message');
+    reminderMessage.style.visibility = 'visible';
+    reminderMessage.textContent = 'Press CLEAR to continue'
+}
+
 function square() {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
@@ -233,6 +241,7 @@ function square() {
 
 function backspace() {
     const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
     let currentDisplay = calcDisplay.textContent;
     if (!isInitialState(calcDisplay)) {
         let tmpArr = currentDisplay.split('');
@@ -314,6 +323,7 @@ function removePartialResetFromAll() {
 
 function partialReset() {
     const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
     calcDisplay.textContent = '';
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
@@ -329,7 +339,9 @@ function removeResetDisplayFromAll() {
 }
 
 function resetDisplay() {
-    document.getElementById('number-display').textContent = '';
+    const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
+    calcDisplay.textContent = '';
     removeResetDisplayFromAll();
 }
 
