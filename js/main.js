@@ -2,50 +2,49 @@ addKeyboardSupport();
 activateBtns();
 
 function addKeyboardSupport() {
-    document.addEventListener('keydown', executeKeyIfValid)
+    document.addEventListener('keydown', executeKeyIfValid);
+}
+
+function createObjWithProperty(text) {
+    return {
+        target: {
+            textContent: text
+        }
+    }
+}
+
+function createObjWithMethod(operator) {
+    return {
+        target: {
+            getAttribute: function(irrelevantStr) {
+                return operator;
+            }
+        }
+    }
 }
 
 function executeKeyIfValid(e) {
     const keyPressed = e.key;
-    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const operators = ['+', '-', 'x', '/', '='];
+    const validNumKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const validOperatorsKeys = ['+', '-', 'x', '/', '='];
     switch (true) {
-        case nums.includes(keyPressed):
-            populateDisplay({
-                target: {
-                    textContent: keyPressed,
-                }
-            })
+        // First three cases use objects as arguments b/c the functions require object arguments as they were designed around using event objects from event listeners
+        case validNumKeys.includes(keyPressed):
+            populateDisplay(createObjWithProperty(keyPressed));
             return;
-        case operators.includes(keyPressed):
+        case validOperatorsKeys.includes(keyPressed):
+            // Special case for 'x' key b/c 'x' isn't the multiplication symbol ('*' is in js) 
             if (keyPressed == 'x') {
-                doOperation({
-                    target: {
-                        getAttribute: function (irrelevantStr) {
-                            return '*';
-                    }
-                    }
-                })
+                doOperation(createObjWithMethod('*'))
                 return
             }
+            // '=' case triggers diff function within doOperation()
             else if (keyPressed == '=') {
-                doOperation({
-                    target: {
-                        getAttribute: function (irrelevantStr) {
-                            return '=';
-                    }
-                    }
-                })
+                doOperation(createObjWithMethod('='))
                 return;
             }
             else {
-                doOperation({
-                    target: {
-                        getAttribute: function (irrelevantStr) {
-                            return keyPressed;
-                    }
-                    }
-                })
+                doOperation(createObjWithMethod(keyPressed))
                 return;
             }
         case keyPressed == '.':
@@ -69,41 +68,51 @@ function executeKeyIfValid(e) {
     }
 }
 
-function alterDisplayAndData(display, result) {
-    hideReminderMessage();
-    if (checkSpecialCases(display)) result = 'ERROR';
-    display.textContent = result;
-    if (result === 'ERROR') result = '0';
-    display.dataset.num2 = result;
-    display.dataset.operator = '+';
-    display.dataset.num1 = '0';
+function activateBtns() {
     const nums = document.querySelectorAll('.num');
-    nums.forEach(num => {
-        num.removeEventListener('click', populateDisplay);
-        num.addEventListener('click', partialReset);
-        num.addEventListener('click', populateDisplay);
-    });
+    nums.forEach(num => num.addEventListener('click', populateDisplay));
+
+    const operatorBtns = document.querySelectorAll('.operator');
+    operatorBtns.forEach(operatorBtn => operatorBtn.addEventListener('click', doOperation));
+
+    const clearBtn = document.getElementById('clear');
+    clearBtn.addEventListener('click', resetCalculator);
+
+    const switchSignBtn = document.getElementById('switch-sign');
+    switchSignBtn.addEventListener('click', switchSign);
+
+    const percentBtn = document.getElementById('percent');
+    percentBtn.addEventListener('click', convertPercent);
+
     const dotBtn = document.getElementById('dot');
-    dotBtn.removeEventListener('click', addDot);
-    dotBtn.addEventListener('click', partialReset);
     dotBtn.addEventListener('click', addDot);
-    document.removeEventListener('keydown', executeKeyIfValid);
-    document.addEventListener('keydown', keyPartialReset);
-    document.addEventListener('keydown', executeKeyIfValid);
+
+    const backspaceBtn = document.getElementById('backspace');
+    backspaceBtn.addEventListener('click', backspace);
+
+    const squaredBtn = document.getElementById('squared');
+    squaredBtn.addEventListener('click', square);
 }
 
-function checkSpecialCases(display) {
-    const text = display.textContent;
-    const l = text.length - 1
-    if (text == '-' || text[l] == '-' && text[l - 1] == 'e' || text[l] == 'e') return true;
-}
-
-function keyPartialReset(e) {
-    const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
-    if (numsAndDot.includes(e.key)) {
-        partialReset();
+function doOperation(e) {
+    hideReminderMessage();
+    const calcDisplay = document.getElementById('number-display');
+    let num1 = +calcDisplay.dataset.num1;
+    let num2 = +calcDisplay.dataset.num2;
+    let oldOperator = calcDisplay.dataset.operator;
+    let newOperator = e.target.getAttribute('id');
+    if (isConsecutiveOperator(num2, oldOperator)) return;
+    let result = operate(num1, num2, oldOperator);
+    if (newOperator == '=') {
+        alterDisplayAndData(calcDisplay, result);
     }
+    else {
+        updateDisplayAndData(calcDisplay, result, newOperator);
+    }
+}
 
+function isConsecutiveOperator(num, operator) {
+    return num == 0 && operator != '/' ? true : false
 }
 
 function updateDisplayAndData(display, result, operator) {
@@ -131,6 +140,45 @@ function updateDisplayAndData(display, result, operator) {
     dotBtn.addEventListener('click', addDot);
 }
 
+function alterDisplayAndData(display, result) {
+    hideReminderMessage();
+    if (checkSpecialCases(display)) result = 'ERROR';
+    display.textContent = result;
+    if (result === 'ERROR') result = '0';
+    display.dataset.num2 = result;
+    display.dataset.operator = '+';
+    display.dataset.num1 = '0';
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => {
+        num.removeEventListener('click', populateDisplay);
+        num.addEventListener('click', partialReset);
+        num.addEventListener('click', populateDisplay);
+    });
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.addEventListener('click', partialReset);
+    dotBtn.addEventListener('click', addDot);
+    document.removeEventListener('keydown', executeKeyIfValid);
+    document.addEventListener('keydown', keyPartialReset);
+    document.addEventListener('keydown', executeKeyIfValid);
+}
+
+
+
+function checkSpecialCases(display) {
+    const text = display.textContent;
+    const l = text.length - 1
+    if (text == '-' || text[l] == '-' && text[l - 1] == 'e' || text[l] == 'e') return true;
+}
+
+function keyPartialReset(e) {
+    const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+    if (numsAndDot.includes(e.key)) {
+        partialReset();
+    }
+
+}
+
 function keyResetDisplay(e) {
     const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
     if (numsAndDot.includes(e.key)) {
@@ -138,50 +186,10 @@ function keyResetDisplay(e) {
     }
 }
 
-function doOperation(e) {
-    hideReminderMessage();
-    const calcDisplay = document.getElementById('number-display');
-    let num1 = calcDisplay.dataset.num1;
-    let num2 = calcDisplay.dataset.num2;
-    let oldOperator = calcDisplay.dataset.operator;
-    let newOperator = e.target.getAttribute('id');
-    // What happens if user presses an two operators consecutively (not dividing by 0)
-    if (num2 == '0' && oldOperator != '/') return;
-    let result = operate(+num1, +num2, oldOperator);
-    if (newOperator != '=') {
-        updateDisplayAndData(calcDisplay, result, newOperator);
-    }
-    else {
-        alterDisplayAndData(calcDisplay, result);
-    }
-}
 
 
-function activateBtns() {
-    const nums = document.querySelectorAll('.num');
-    nums.forEach(num => num.addEventListener('click', populateDisplay));
 
-    const operatorBtns = document.querySelectorAll('.operator');
-    operatorBtns.forEach(operatorBtn => operatorBtn.addEventListener('click', doOperation));
 
-    const clearBtn = document.getElementById('clear');
-    clearBtn.addEventListener('click', resetCalculator);
-
-    const switchSignBtn = document.getElementById('switch-sign');
-    switchSignBtn.addEventListener('click', switchSign);
-
-    const percentBtn = document.getElementById('percent');
-    percentBtn.addEventListener('click', convertPercent);
-
-    const dotBtn = document.getElementById('dot');
-    dotBtn.addEventListener('click', addDot);
-
-    const backspaceBtn = document.getElementById('backspace');
-    backspaceBtn.addEventListener('click', backspace);
-
-    const squaredBtn = document.getElementById('squared');
-    squaredBtn.addEventListener('click', square);
-}
 
 function square() {
     hideReminderMessage();
@@ -293,12 +301,17 @@ function resetCalculator() {
 function populateDisplay(e) {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    // Condition for initial state of calculator
-    if (calcDisplay.textContent == ' 0') calcDisplay.textContent = '';
-    const newNum = e.target.textContent;
-    calcDisplay.textContent += newNum;
-    calcDisplay.dataset.num2 += newNum;
+    if (isInitial(calcDisplay)) calcDisplay.textContent = '';
+    let appendedNum = e.target.textContent;
+    calcDisplay.textContent += appendedNum;
+    calcDisplay.dataset.num2 += appendedNum;
 }
+
+function isInitial(display) {
+    return display.textContent == ' 0' ? true : false
+}
+
+
 
 function add(a, b) {
     return +(a + b).toFixed(8);
