@@ -179,11 +179,10 @@ function activateBtns() {
 
     const squaredBtn = document.getElementById('squared');
     squaredBtn.addEventListener('click', square);
-
-
 }
 
 function square() {
+    hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
     const squaredNum = (+calcDisplay.textContent * +calcDisplay.textContent).toFixed(8);
     calcDisplay.textContent = String(squaredNum);
@@ -203,6 +202,7 @@ function backspace() {
 
 }
 function addDot() {
+    hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
     if (calcDisplay.textContent == ' 0' || calcDisplay.dataset.num2 == '0') {
         calcDisplay.textContent = '.';
@@ -231,11 +231,23 @@ function hasOneDot(display) {
 
 function convertPercent() {
     const calcDisplay = document.getElementById('number-display');
-    const percentNum = String(+(+calcDisplay.dataset.num2 / 100).toFixed(8));
-    calcDisplay.dataset.num2 = calcDisplay.textContent = percentNum;
+    const percentNum = +(+calcDisplay.dataset.num2 / 100).toFixed(8);
+    if (isTinyNum(percentNum)) {
+        const reminderMessage = document.getElementById('reminder-message');
+        reminderMessage.style.visibility = 'visible';
+        reminderMessage.textContent = 'Calculator only works to 8 eight decimals. Please input something else';
+        return;
+    }
+    hideReminderMessage();
+    calcDisplay.dataset.num2 = calcDisplay.textContent = String(percentNum);
+}
+
+function isTinyNum(num) {
+    return num < 0.00000001 ? true : false;
 }
 
 function switchSign() {
+    hideReminderMessage()
     const calcDisplay = document.getElementById('number-display');
     const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
     if (calcDisplay.textContent != ' 0') {
