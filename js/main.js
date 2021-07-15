@@ -51,13 +51,16 @@ function executeKeyIfValid(e) {
         case keyPressed == '.':
             addDot();
             return;
-        case keyPressed == 'a':
+        case keyPressed == 'Backspace':
+            backspace();
             return;
+
     }
 }
 
 function alterDisplayAndData(display, result) {
     hideReminderMessage();
+    if (checkSpecialCases(display)) result = 'ERROR';
     display.textContent = result;
     if (result === 'ERROR') result = '0';
     display.dataset.num2 = result;
@@ -78,6 +81,10 @@ function alterDisplayAndData(display, result) {
     document.addEventListener('keydown', executeKeyIfValid);
 }
 
+function checkSpecialCases(display) {
+    return display.textContent == '-' ? true : false;
+}
+
 function keyPartialReset(e) {
     const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
     if (numsAndDot.includes(e.key)) {
@@ -87,6 +94,7 @@ function keyPartialReset(e) {
 }
 
 function updateDisplayAndData(display, result, operator) {
+    if (checkSpecialCases(display)) result = 'ERROR';
     display.textContent = result;
     if (result === 'ERROR') result = '0';
     display.dataset.num1 = result;
