@@ -185,7 +185,7 @@ function activateBtns() {
 
 function square() {
     const calcDisplay = document.getElementById('number-display');
-    const squaredNum = +calcDisplay.textContent * +calcDisplay.textContent;
+    const squaredNum = (+calcDisplay.textContent * +calcDisplay.textContent).toFixed(8);
     calcDisplay.textContent = String(squaredNum);
     calcDisplay.dataset.num2 = '0' + squaredNum;
 }
@@ -231,7 +231,7 @@ function hasOneDot(display) {
 
 function convertPercent() {
     const calcDisplay = document.getElementById('number-display');
-    const percentNum = String(+calcDisplay.dataset.num2 / 100);
+    const percentNum = String(+(+calcDisplay.dataset.num2 / 100).toFixed(8));
     calcDisplay.dataset.num2 = calcDisplay.textContent = percentNum;
 }
 
@@ -286,19 +286,19 @@ function populateDisplay(e) {
 }
 
 function add(a, b) {
-    return a + b;
+    return +(a + b).toFixed(8);
 }
 
 function subtract(a, b) {
-    return a - b;
+    return +(a - b).toFixed(8);
 }
 
 function multiply(a, b) {
-    return (a * 10) * (b * 10) / 100;
+    return +(a * b).toFixed(8);
 }
 
 function divide(a, b) {
-    return (a * 10) / (b * 10);
+    return +(a / b).toFixed(8);
 }
 
 function operate(num1, num2, operator) {
