@@ -97,12 +97,12 @@ function activateBtns() {
 function doOperation(e) {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    let num1 = +calcDisplay.dataset.num1;
-    let num2 = +calcDisplay.dataset.num2;
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
     let oldOperator = calcDisplay.dataset.operator;
     let newOperator = e.target.getAttribute('id');
     if (isConsecutiveOperator(num2, oldOperator)) return;
-    let result = operate(num1, num2, oldOperator);
+    let result = operate(+num1, +num2, oldOperator);
     if (newOperator == '=') {
         alterDisplayAndData(calcDisplay, result);
     }
@@ -111,28 +111,24 @@ function doOperation(e) {
     }
 }
 
-function isConsecutiveOperator(num, operator) {
-    return num == 0 && operator != '/' ? true : false
-}
-
-function updateDisplayAndData(display, result, operator) {
-    if (checkSpecialCases(display)) result = 'ERROR';
-    display.textContent = result;
-    if (result === 'ERROR') result = '0';
-    display.dataset.num1 = result;
-    display.dataset.operator = operator;
-    display.dataset.num2 = '0';
-    const nums = document.querySelectorAll('.num');
+function configureDocumentForOperator() {
     document.removeEventListener('keydown', executeKeyIfValid);
     document.removeEventListener('keydown', keyPartialReset);
     document.addEventListener('keydown', keyResetDisplay);
     document.addEventListener('keydown', executeKeyIfValid);
+}
+
+function configureNumBtnsForOperator() {
+    const nums = document.querySelectorAll('.num');
     nums.forEach(num => {
         num.removeEventListener('click', populateDisplay);
         num.removeEventListener('click', partialReset);
         num.addEventListener('click', resetDisplay);
         num.addEventListener('click', populateDisplay);
     })
+}
+
+function configureDotBtnForOperator() {
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', addDot);
     dotBtn.removeEventListener('click', partialReset);
@@ -140,35 +136,69 @@ function updateDisplayAndData(display, result, operator) {
     dotBtn.addEventListener('click', addDot);
 }
 
-function alterDisplayAndData(display, result) {
-    hideReminderMessage();
-    if (checkSpecialCases(display)) result = 'ERROR';
-    display.textContent = result;
-    if (result === 'ERROR') result = '0';
-    display.dataset.num2 = result;
-    display.dataset.operator = '+';
-    display.dataset.num1 = '0';
+function updateDisplayAndData(display, result, operator) {
+    if (isSpecialCase(display) || result == 'ERROR') {
+        display.textContent = 'ERROR';
+        result = 0;
+    }
+    else {
+        display.textContent = result;
+    }
+    display.dataset.num1 = result;
+    display.dataset.operator = operator;
+    display.dataset.num2 = '0';
+
+    configureDocumentForOperator();
+    configureNumBtnsForOperator();
+    configureDotBtnForOperator();
+}
+
+function configureDocumentForEqualsSign() {
+    document.removeEventListener('keydown', executeKeyIfValid);
+    document.addEventListener('keydown', keyPartialReset);
+    document.addEventListener('keydown', executeKeyIfValid);
+}
+
+function configureNumBtnsForEqualsSign() {
     const nums = document.querySelectorAll('.num');
     nums.forEach(num => {
         num.removeEventListener('click', populateDisplay);
         num.addEventListener('click', partialReset);
         num.addEventListener('click', populateDisplay);
     });
+}
+
+function configureDotBtnForEqualsSign() {
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', addDot);
     dotBtn.addEventListener('click', partialReset);
     dotBtn.addEventListener('click', addDot);
-    document.removeEventListener('keydown', executeKeyIfValid);
-    document.addEventListener('keydown', keyPartialReset);
-    document.addEventListener('keydown', executeKeyIfValid);
+
+}
+
+function alterDisplayAndData(display, result) {
+    if (isSpecialCase(display) || result == 'ERROR') {
+        display.textContent = 'ERROR';
+        result = 0;
+    }
+    else {
+        display.textContent = result;
+    }
+    display.dataset.num2 = result;
+    display.dataset.operator = '+';
+    display.dataset.num1 = '0';
+
+    configureDocumentForEqualsSign();
+    configureNumBtnsForEqualsSign();
+    configureDotBtnForEqualsSign();
 }
 
 
 
-function checkSpecialCases(display) {
+function isSpecialCase(display) {
     const text = display.textContent;
     const l = text.length - 1
-    if (text == '-' || text[l] == '-' && text[l - 1] == 'e' || text[l] == 'e') return true;
+    if (text == '-' || text[l] == '-' && text[l - 1] == 'e' || text[l] == 'e' || text.includes('E')) return true;
 }
 
 function keyPartialReset(e) {
@@ -301,14 +331,19 @@ function resetCalculator() {
 function populateDisplay(e) {
     hideReminderMessage();
     const calcDisplay = document.getElementById('number-display');
-    if (isInitial(calcDisplay)) calcDisplay.textContent = '';
+    if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
     let appendedNum = e.target.textContent;
     calcDisplay.textContent += appendedNum;
     calcDisplay.dataset.num2 += appendedNum;
 }
 
-function isInitial(display) {
+function isInitialState(display) {
     return display.textContent == ' 0' ? true : false
+}
+
+function isConsecutiveOperator(num, operator) {
+    // num has to be string or else entering a '0' still returns true even though data-num2 = '00' (logs as 0 as int)
+    return num == '0' && operator != '/' ? true : false
 }
 
 
