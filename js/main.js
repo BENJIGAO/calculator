@@ -209,7 +209,6 @@ function keyPartialReset(e) {
     if (numsAndDot.includes(e.key)) {
         partialReset();
     }
-
 }
 
 function keyResetDisplay(e) {
