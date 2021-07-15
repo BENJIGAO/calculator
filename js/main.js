@@ -57,7 +57,15 @@ function executeKeyIfValid(e) {
         case keyPressed == 's':
             switchSign();
             return;
-
+        case keyPressed == 'Escape':
+            resetCalculator();
+            return;
+        case keyPressed == '%':
+            convertPercent();
+            return;
+        case keyPressed == '^':
+            square();
+            return;
     }
 }
 
@@ -171,6 +179,8 @@ function activateBtns() {
 
     const squaredBtn = document.getElementById('squared');
     squaredBtn.addEventListener('click', square);
+
+
 }
 
 function square() {
@@ -245,8 +255,6 @@ function partialReset() {
     document.removeEventListener('keydown', keyPartialReset);
 }
 
-
-
 function resetDisplay() {
     const nums = document.querySelectorAll('.num');
     document.getElementById('number-display').textContent = '';
@@ -254,7 +262,6 @@ function resetDisplay() {
     const dotBtn = document.getElementById('dot');
     dotBtn.removeEventListener('click', resetDisplay);
     document.removeEventListener('keydown', keyResetDisplay);
-    
 }
 
 function resetCalculator() {
