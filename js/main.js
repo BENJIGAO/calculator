@@ -94,7 +94,8 @@ function alterDisplayAndData(display, result) {
 
 function checkSpecialCases(display) {
     const text = display.textContent;
-    if (text == '-' || text.includes('e-') || text[text.length - 1] == 'e') return true;
+    const l = text.length - 1
+    if (text == '-' || text[l] == '-' && text[l - 1] == 'e' || text[l] == 'e') return true;
 }
 
 function keyPartialReset(e) {
