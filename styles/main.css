@@ -4,10 +4,15 @@ body {
     justify-content: center;
 }
 
-button:not(.non-circle) {
+button {
+    border: none;
+    height: 70px;
+}
+
+button:not(.non-circle-bottom):not(.non-circle-top) {
     border-radius: 50%;
-    height: 60px;
-    width: 60px;
+    height: 70px;
+    width: 70px;
     align-self: center;
     justify-self: center;
 }
@@ -15,8 +20,9 @@ button:not(.non-circle) {
 #calculator-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 40px 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 
+    "display display display display"
     "display display display display"
     "clear clear backspace backspace"
     ". . . ."
@@ -24,10 +30,12 @@ button:not(.non-circle) {
     ". . . ."
     ". . . ."
     "zero zero . .";
-    height: 500px;
-    width: 300px;
+    row-gap: 7px;
+    height: 550px;
+    width: 350px;
     background-color: black;
     border-radius: 25px;
+    padding: 5px 10px 20px 10px;
 }
 
 #display-container {
@@ -40,17 +48,33 @@ button:not(.non-circle) {
     align-items: flex-end;
     justify-content: flex-end;
     background-color: dimgrey;
-    border-radius: inherit;
-    width: 270px;
-    height: 60px;
+    border-radius: 12px;
+    width: 85%;
+    height: 90%;
     padding: 0px 10px;
-    align-self: center;
+    align-self: flex-end;
     justify-self: center;
 }
 
 #reminder-message {
     visibility: hidden;
     color: red;
+}
+
+.non-circle-top {
+    height: 30px;
+    border-radius: 30px;
+    width: 84%;
+    justify-self: center;
+    align-self: center;
+}
+
+.non-circle-bottom {
+    border-radius: 50px;
+    width: 88%;
+    height: 100%;
+    justify-self: center;
+    align-self: center;
 }
 
 #clear {grid-area: clear}
