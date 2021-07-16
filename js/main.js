@@ -356,10 +356,12 @@ function resetCalculator() {
 
 function populateDisplay(e) {
     hideReminderMessage();
+    const numEle = e.target;
+    numEle.classList.add('active');
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
-    let appendedNum = e.target.textContent;
+    let appendedNum = numEle.textContent;
     calcDisplay.textContent += appendedNum;
     calcDisplay.dataset.num2 += appendedNum;
 }

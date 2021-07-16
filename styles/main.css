@@ -9,6 +9,11 @@ button {
     color: white;
     font-weight: bold;
     font-size: 25px;
+    transition: background-color 1s ease-out;
+}
+
+button:hover {
+    opacity: 0.8;
 }
 
 span {
@@ -115,7 +120,10 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 
 .darkgray {
     background-color: #424242;
+}
 
+.active {
+    background-color: purple;
 }
 
 .non-circle-bottom {
