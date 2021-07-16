@@ -139,7 +139,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 #clear {grid-area: clear}
 #backspace {grid-area: backspace}
 
-#zero {
+#_0 {
     grid-area: zero; 
     text-align: left;
     padding-left: 25px;

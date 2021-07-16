@@ -5,21 +5,9 @@ function addKeyboardSupport() {
     document.addEventListener('keydown', executeKeyIfValid);
 }
 
-function createObjWithProperty(text) {
+function createObjUsingId(id) {
     return {
-        target: {
-            textContent: text
-        }
-    }
-}
-
-function createObjWithMethod(operator) {
-    return {
-        target: {
-            getAttribute: function(irrelevantStr) {
-                return operator;
-            }
-        }
+        target: document.getElementById(`_${id}`)
     }
 }
 
@@ -30,21 +18,21 @@ function executeKeyIfValid(e) {
     switch (true) {
         // First three cases use objects as arguments b/c the functions require object arguments as they were designed around using event objects from event listeners
         case validNumKeys.includes(keyPressed):
-            populateDisplay(createObjWithProperty(keyPressed));
+            populateDisplay(createObjUsingId(keyPressed));
             return;
         case validOperatorsKeys.includes(keyPressed):
             // Special case for 'x' key b/c 'x' isn't the multiplication symbol ('*' is in js) 
             if (keyPressed == 'x') {
-                doOperation(createObjWithMethod('*'))
+                doOperation(createObjUsingId('*'))
                 return
             }
             // '=' case triggers diff function within doOperation()
             else if (keyPressed == '=') {
-                doOperation(createObjWithMethod('='))
+                doOperation(createObjUsingId('='))
                 return;
             }
             else {
-                doOperation(createObjWithMethod(keyPressed))
+                doOperation(createObjUsingId(keyPressed))
                 return;
             }
         case keyPressed == '.':
@@ -66,6 +54,46 @@ function executeKeyIfValid(e) {
             square();
             return;
     }
+}
+
+function populateDisplay(e) {
+    hideReminderMessage();
+    const numEle = e.target;
+    addTransition(numEle);
+    const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
+    if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
+    let appendedNum = numEle.textContent;
+    calcDisplay.textContent += appendedNum;
+    calcDisplay.dataset.num2 += appendedNum;
+}
+
+function doOperation(e) {
+    hideReminderMessage();
+    const calcDisplay = document.getElementById('number-display');
+    const operatorEle = e.target;
+    addTransition(operatorEle);
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    let oldOperator = calcDisplay.dataset.operator;
+    let newOperator = operatorEle.getAttribute('id').split('').pop();
+    if (isConsecutiveOperator(num2, oldOperator)) return;
+    let result = operate(+num1, +num2, oldOperator);
+    if (newOperator == '=') {
+        alterDisplayAndData(calcDisplay, result);
+    }
+    else {
+        updateDisplayAndData(calcDisplay, result, newOperator);
+    }
+}
+
+function addTransition(ele) {
+    ele.classList.add('no-transition')
+    ele.classList.add('active')
+    ele.offsetHeight;
+    ele.classList.remove('no-transition');
+    ele.classList.remove('active');
+
 }
 
 function activateBtns() {
@@ -94,22 +122,7 @@ function activateBtns() {
     squaredBtn.addEventListener('click', square);
 }
 
-function doOperation(e) {
-    hideReminderMessage();
-    const calcDisplay = document.getElementById('number-display');
-    let num1 = calcDisplay.dataset.num1;
-    let num2 = calcDisplay.dataset.num2;
-    let oldOperator = calcDisplay.dataset.operator;
-    let newOperator = e.target.getAttribute('id');
-    if (isConsecutiveOperator(num2, oldOperator)) return;
-    let result = operate(+num1, +num2, oldOperator);
-    if (newOperator == '=') {
-        alterDisplayAndData(calcDisplay, result);
-    }
-    else {
-        updateDisplayAndData(calcDisplay, result, newOperator);
-    }
-}
+
 
 function configureDocumentForOperator() {
     document.removeEventListener('keydown', executeKeyIfValid);
@@ -226,6 +239,7 @@ function outputClearMessage() {
 
 function square() {
     hideReminderMessage();
+    addTransition(document.getElementById('squared'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     const squaredNum = +calcDisplay.textContent * +calcDisplay.textContent;
@@ -234,11 +248,14 @@ function square() {
         return;
     }
     newStringNum = +squaredNum.toFixed(8);
+    if (!isInitialState(calcDisplay)) {
     calcDisplay.textContent = newStringNum;
     calcDisplay.dataset.num2 = '0' + newStringNum;
+    }
 }
 
 function backspace() {
+    addTransition(document.getElementById('backspace'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     let currentDisplay = calcDisplay.textContent;
@@ -253,6 +270,7 @@ function backspace() {
 }
 function addDot() {
     hideReminderMessage();
+    addTransition(document.getElementById('dot'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay) || calcDisplay.dataset.num2 == '0') {
@@ -282,6 +300,7 @@ function hasOneDot(display) {
 
 function convertPercent() {
     hideReminderMessage();
+    addTransition(document.getElementById('percent'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     const percentNum = +(+calcDisplay.dataset.num2 / 100).toFixed(8);
@@ -289,7 +308,10 @@ function convertPercent() {
         outputTinyNumMessage();
         return;
     }
-    calcDisplay.dataset.num2 = calcDisplay.textContent = String(percentNum);
+    if (!isInitialState(calcDisplay)) {
+        calcDisplay.dataset.num2 = calcDisplay.textContent = String(percentNum);
+    }
+    
 }
 
 function outputTinyNumMessage() {
@@ -299,11 +321,12 @@ function outputTinyNumMessage() {
 }
 
 function isTinyNum(num) {
-    return num < 0.00000001 ? true : false;
+    return num < 0.00000001 && num > 0 ? true : false;
 }
 
 function switchSign() {
-    hideReminderMessage()
+    hideReminderMessage();
+    addTransition(document.getElementById('switch-sign'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
@@ -346,28 +369,13 @@ function resetDisplay() {
 
 function resetCalculator() {
     hideReminderMessage();
+    addTransition(document.getElementById('clear'));
     const calcDisplay = document.getElementById('number-display');
     calcDisplay.textContent = ' 0'
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
     removePartialResetFromAll();
     
-}
-
-function populateDisplay(e) {
-    hideReminderMessage();
-    const numEle = e.target;
-    numEle.classList.add('no-transition')
-    numEle.classList.add('active')
-    numEle.offsetHeight;
-    numEle.classList.remove('no-transition');
-    numEle.classList.remove('active');
-    const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
-    if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
-    let appendedNum = numEle.textContent;
-    calcDisplay.textContent += appendedNum;
-    calcDisplay.dataset.num2 += appendedNum;
 }
 
 function isInitialState(display) {
