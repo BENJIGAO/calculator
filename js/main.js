@@ -357,7 +357,11 @@ function resetCalculator() {
 function populateDisplay(e) {
     hideReminderMessage();
     const numEle = e.target;
-    numEle.classList.add('active');
+    numEle.classList.add('no-transition')
+    numEle.classList.add('active')
+    numEle.offsetHeight;
+    numEle.classList.remove('no-transition');
+    numEle.classList.remove('active');
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay)) calcDisplay.textContent = '';

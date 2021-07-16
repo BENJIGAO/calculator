@@ -9,8 +9,10 @@ button {
     color: white;
     font-weight: bold;
     font-size: 25px;
-    transition: background-color 1s ease-out;
+    transition: background-color 0.3s ease-in;
 }
+
+
 
 button:hover {
     opacity: 0.8;
@@ -141,4 +143,8 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     grid-area: zero; 
     text-align: left;
     padding-left: 25px;
+}
+
+.no-transition {
+    transition: none;
 }
