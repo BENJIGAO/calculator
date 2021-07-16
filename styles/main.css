@@ -6,7 +6,14 @@ body {
 
 button {
     border: none;
-    height: 70px;
+    color: white;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+span {
+    font-size:20px;
+
 }
 
 button:not(.non-circle-bottom):not(.non-circle-top) {
@@ -20,7 +27,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 #calculator-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 150px 1fr 40px 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 155px 1fr 40px 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 
     "display display display display"
     "display display display display"
@@ -47,30 +54,59 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     flex-direction: column;
     align-items: flex-end;
     justify-content: flex-end;
-    background-color: dimgrey;
+    background-color: #504f4f;
     border-radius: 12px;
     width: 85%;
     height: 90%;
     padding: 0px 10px;
     align-self: flex-end;
     justify-self: center;
+    color: white;
+    font-size: 40px;
+}
+
+#display-container, #reminder-message {
+    border: none;
+    font-weight: 600;
 }
 
 #reminder-message {
     visibility: hidden;
     color: red;
+    font-size: 20px;
 }
 
 .non-circle-top {
     height: 30px;
-    border-radius: 30px;
+    border-radius: 25px;
     width: 84%;
     justify-self: center;
     align-self: center;
+    letter-spacing: 2px;
+    font-size: 15px;
+    font-weight: normal;
+    color: black;
+    padding: 0;
+}
+
+#squared {
+    padding-left: 8px;
+}
+
+#percent {
+    font-size: 23px;
+
+}
+
+#switch-sign {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
 }
 
 .lightgray {
-    background-color: #ccc8c8;
+    background-color: #9c9c9c;
 }
 
 .orange {
@@ -78,7 +114,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 }
 
 .darkgray {
-    background-color: darkgray;
+    background-color: #424242;
 
 }
 
@@ -92,6 +128,10 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 
 #clear {grid-area: clear}
 #backspace {grid-area: backspace}
-#zero {grid-area: zero; text-align: left;}
+#zero {
+    grid-area: zero; 
+    text-align: left;
+    padding-left: 25px;
+}
 
 
