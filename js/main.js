@@ -68,6 +68,101 @@ function populateDisplay(e) {
     calcDisplay.textContent += appendedNum;
     calcDisplay.dataset.num2 += appendedNum;
 }
+function isInfinity() {
+    const calcDisplay = document.getElementById('number-display');
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    return num1.includes('Infinity') || num2.includes('Infinity') ? true : false; 
+}
+
+function switchSign() {
+    hideReminderMessage();
+    
+    addTransition(document.getElementById('switch-sign'));
+    const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    if (isInfinity()) {
+        if (num1.includes('Infinity')) num1 = 'Infinity';
+        if (num2.includes('Infinity')) num2 = 'Infinity';
+    }
+    const oppSignNum = +num2 == 0 ? String(+num1 * -1) : String(+num2 * -1) ;
+    if (!isInitialState(calcDisplay)) {
+        calcDisplay.textContent = oppSignNum;
+        if (num2 == 0) {
+            calcDisplay.dataset.num1 = oppSignNum;
+            return;
+        }
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
+        calcDisplay.dataset.num2 = oppSignNum;
+
+    }
+}
+
+function convertPercent() {
+    hideReminderMessage();
+    
+    addTransition(document.getElementById('percent'));
+    const calcDisplay = document.getElementById('number-display');
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    let desiredNum = num2 == 0 ? num1 : num2;
+    if (checkSpecialCase(calcDisplay)) return;
+    if (isInfinity()) {
+        calcDisplay.textContent = 'ERROR';
+        outputClearMessage();
+        return;
+    }
+    const percentNum = (+desiredNum / 100);
+    if (isTinyNum(percentNum)) {
+        outputTinyNumMessage();
+        return;
+    }
+    if (!isInitialState(calcDisplay)) {
+        if (calcDisplay.dataset.num2 == 0) {
+            calcDisplay.dataset.num1 = calcDisplay.textContent = String(+percentNum.toFixed(8));
+            return;
+        }
+        calcDisplay.dataset.num2 = calcDisplay.textContent = String(+percentNum.toFixed(8));
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
+    }
+}
+
+function square() {
+    hideReminderMessage();
+    addTransition(document.getElementById('squared'));
+    const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
+    if (isInfinity()) {
+        calcDisplay.textContent = 'ERROR';
+        outputClearMessage();
+        return;
+    }
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    const squaredNum = num2 == 0 ? num1 * num1 : num2 * num2;
+    if (isTinyNum(squaredNum)) {
+        outputTinyNumMessage();
+        return;
+    }
+    newStringNum = +squaredNum.toFixed(8);
+    if (!isInitialState(calcDisplay)) {
+        calcDisplay.textContent = newStringNum;
+        if (num2 == 0) {
+            calcDisplay.dataset.num1 = newStringNum;
+            return;
+        }
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
+        calcDisplay.dataset.num2 = '0' + newStringNum;
+    }
+}
 
 function doOperation(e) {
     hideReminderMessage();
@@ -79,8 +174,16 @@ function doOperation(e) {
     let oldOperator = calcDisplay.dataset.operator;
     let newOperator = operatorEle.getAttribute('id').split('').pop();
     if (isConsecutiveOperator(num2, oldOperator)) return;
+    if (isInfinity()) {
+        calcDisplay.textContent = 'ERROR';
+        outputClearMessage();
+        return;
+    }
     let result = operate(+num1, +num2, oldOperator);
     if (isTinyNum(result)) {
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
         outputTinyNumMessage();
         return;
     }
@@ -129,30 +232,7 @@ function activateBtns() {
 
 
 
-function configureDocumentForOperator() {
-    document.removeEventListener('keydown', executeKeyIfValid);
-    document.removeEventListener('keydown', keyPartialReset);
-    document.addEventListener('keydown', keyResetDisplay);
-    document.addEventListener('keydown', executeKeyIfValid);
-}
 
-function configureNumBtnsForOperator() {
-    const nums = document.querySelectorAll('.num');
-    nums.forEach(num => {
-        num.removeEventListener('click', populateDisplay);
-        num.removeEventListener('click', partialReset);
-        num.addEventListener('click', resetDisplay);
-        num.addEventListener('click', populateDisplay);
-    })
-}
-
-function configureDotBtnForOperator() {
-    const dotBtn = document.getElementById('dot');
-    dotBtn.removeEventListener('click', addDot);
-    dotBtn.removeEventListener('click', partialReset);
-    dotBtn.addEventListener('click', resetDisplay);
-    dotBtn.addEventListener('click', addDot);
-}
 
 function updateDisplayAndData(display, result, operator) {
     if (checkSpecialCase(display)) return
@@ -172,29 +252,6 @@ function updateDisplayAndData(display, result, operator) {
     configureDocumentForOperator();
     configureNumBtnsForOperator();
     configureDotBtnForOperator();
-}
-
-function configureDocumentForEqualsSign() {
-    document.removeEventListener('keydown', executeKeyIfValid);
-    document.addEventListener('keydown', keyPartialReset);
-    document.addEventListener('keydown', executeKeyIfValid);
-}
-
-function configureNumBtnsForEqualsSign() {
-    const nums = document.querySelectorAll('.num');
-    nums.forEach(num => {
-        num.removeEventListener('click', populateDisplay);
-        num.addEventListener('click', partialReset);
-        num.addEventListener('click', populateDisplay);
-    });
-}
-
-function configureDotBtnForEqualsSign() {
-    const dotBtn = document.getElementById('dot');
-    dotBtn.removeEventListener('click', addDot);
-    dotBtn.addEventListener('click', partialReset);
-    dotBtn.addEventListener('click', addDot);
-
 }
 
 function alterDisplayAndData(display, result) {
@@ -245,82 +302,8 @@ function outputClearMessage() {
     reminderMessage.textContent = 'Press CLEAR to continue'
 }
 
-function switchSign() {
-    hideReminderMessage();
-    
-    addTransition(document.getElementById('switch-sign'));
-    const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
-    let num1 = +calcDisplay.dataset.num1;
-    let num2 = +calcDisplay.dataset.num2;
-    const oppSignNum = num2 == 0 ? String(num1 * -1) : String(num2 * -1) ;
-    if (!isInitialState(calcDisplay)) {
-        calcDisplay.textContent = oppSignNum;
-        if (num2 == 0) {
-            calcDisplay.dataset.num1 = oppSignNum;
-            return;
-        }
-        configureDocumentForEqualsSign();
-        configureNumBtnsForEqualsSign();
-        configureDotBtnForEqualsSign();
-        calcDisplay.dataset.num2 = oppSignNum;
-
-    }
-}
-
-function convertPercent() {
-    hideReminderMessage();
-    
-    addTransition(document.getElementById('percent'));
-    const calcDisplay = document.getElementById('number-display');
-    let num1 = calcDisplay.dataset.num1;
-    let num2 = calcDisplay.dataset.num2;
-    let desiredNum = num2 == 0 ? num1 : num2;
-    if (checkSpecialCase(calcDisplay)) return;
-    const percentNum = (+desiredNum / 100);
-    if (isTinyNum(percentNum)) {
-        outputTinyNumMessage();
-        return;
-    }
-    if (!isInitialState(calcDisplay)) {
-        if (calcDisplay.dataset.num2 == 0) {
-            calcDisplay.dataset.num1 = calcDisplay.textContent = String(+percentNum.toFixed(8));
-            return;
-        }
-        calcDisplay.dataset.num2 = calcDisplay.textContent = String(+percentNum.toFixed(8));
-        configureDocumentForEqualsSign();
-        configureNumBtnsForEqualsSign();
-        configureDotBtnForEqualsSign();
-    }
-}
-
-function square() {
-    hideReminderMessage();
-    addTransition(document.getElementById('squared'));
-    const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
-    let num1 = calcDisplay.dataset.num1;
-    let num2 = calcDisplay.dataset.num2;
-    const squaredNum = num2 == 0 ? num1 * num1 : num2 * num2;
-    if (isTinyNum(squaredNum)) {
-        outputTinyNumMessage();
-        return;
-    }
-    newStringNum = +squaredNum.toFixed(8);
-    if (!isInitialState(calcDisplay)) {
-        calcDisplay.textContent = newStringNum;
-        if (num2 == 0) {
-            calcDisplay.dataset.num1 = newStringNum;
-            return;
-        }
-        configureDocumentForEqualsSign();
-        configureNumBtnsForEqualsSign();
-        configureDotBtnForEqualsSign();
-        calcDisplay.dataset.num2 = '0' + newStringNum;
-    }
-}
-
 function backspace() {
+    hideReminderMessage();
     addTransition(document.getElementById('backspace'));
     const calcDisplay = document.getElementById('number-display');
     let currentDisplay = calcDisplay.textContent;
@@ -460,4 +443,52 @@ function operate(num1, num2, operator) {
         case '/':
             return num2 != 0 ? divide(num1, num2) : 'ERROR';
     }
+}
+
+function configureDocumentForEqualsSign() {
+    document.removeEventListener('keydown', executeKeyIfValid);
+    document.addEventListener('keydown', keyPartialReset);
+    document.addEventListener('keydown', executeKeyIfValid);
+}
+
+function configureNumBtnsForEqualsSign() {
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => {
+        num.removeEventListener('click', populateDisplay);
+        num.addEventListener('click', partialReset);
+        num.addEventListener('click', populateDisplay);
+    });
+}
+
+function configureDotBtnForEqualsSign() {
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.addEventListener('click', partialReset);
+    dotBtn.addEventListener('click', addDot);
+
+}
+
+function configureDocumentForOperator() {
+    document.removeEventListener('keydown', executeKeyIfValid);
+    document.removeEventListener('keydown', keyPartialReset);
+    document.addEventListener('keydown', keyResetDisplay);
+    document.addEventListener('keydown', executeKeyIfValid);
+}
+
+function configureNumBtnsForOperator() {
+    const nums = document.querySelectorAll('.num');
+    nums.forEach(num => {
+        num.removeEventListener('click', populateDisplay);
+        num.removeEventListener('click', partialReset);
+        num.addEventListener('click', resetDisplay);
+        num.addEventListener('click', populateDisplay);
+    })
+}
+
+function configureDotBtnForOperator() {
+    const dotBtn = document.getElementById('dot');
+    dotBtn.removeEventListener('click', addDot);
+    dotBtn.removeEventListener('click', partialReset);
+    dotBtn.addEventListener('click', resetDisplay);
+    dotBtn.addEventListener('click', addDot);
 }
