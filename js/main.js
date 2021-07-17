@@ -60,6 +60,7 @@ function populateDisplay(e) {
     hideReminderMessage();
     const numEle = e.target;
     addTransition(numEle);
+    if (isDisplayingTinyNumMessage()) return
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
@@ -79,6 +80,10 @@ function doOperation(e) {
     let newOperator = operatorEle.getAttribute('id').split('').pop();
     if (isConsecutiveOperator(num2, oldOperator)) return;
     let result = operate(+num1, +num2, oldOperator);
+    if (isTinyNum(result)) {
+        outputTinyNumMessage();
+        return;
+    }
     if (newOperator == '=') {
         alterDisplayAndData(calcDisplay, result);
     }
@@ -162,6 +167,7 @@ function updateDisplayAndData(display, result, operator) {
     display.dataset.operator = operator;
     display.dataset.num2 = '0';
 
+    removePartialResetFromAll();
     configureDocumentForOperator();
     configureNumBtnsForOperator();
     configureDotBtnForOperator();
@@ -239,6 +245,9 @@ function outputClearMessage() {
 
 function square() {
     hideReminderMessage();
+    configureDocumentForEqualsSign();
+    configureNumBtnsForEqualsSign();
+    configureDotBtnForEqualsSign();
     addTransition(document.getElementById('squared'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
@@ -257,7 +266,6 @@ function square() {
 function backspace() {
     addTransition(document.getElementById('backspace'));
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
     let currentDisplay = calcDisplay.textContent;
     if (!isInitialState(calcDisplay)) {
         let tmpArr = currentDisplay.split('');
@@ -300,18 +308,20 @@ function hasOneDot(display) {
 
 function convertPercent() {
     hideReminderMessage();
+    configureDocumentForEqualsSign();
+    configureNumBtnsForEqualsSign();
+    configureDotBtnForEqualsSign();
     addTransition(document.getElementById('percent'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
-    const percentNum = +(+calcDisplay.dataset.num2 / 100).toFixed(8);
+    const percentNum = (+calcDisplay.dataset.num2 / 100);
     if (isTinyNum(percentNum)) {
         outputTinyNumMessage();
         return;
     }
     if (!isInitialState(calcDisplay)) {
-        calcDisplay.dataset.num2 = calcDisplay.textContent = String(percentNum);
+        calcDisplay.dataset.num2 = calcDisplay.textContent = String(+percentNum.toFixed(8));
     }
-    
 }
 
 function outputTinyNumMessage() {
@@ -326,6 +336,9 @@ function isTinyNum(num) {
 
 function switchSign() {
     hideReminderMessage();
+    configureDocumentForEqualsSign();
+    configureNumBtnsForEqualsSign();
+    configureDotBtnForEqualsSign();
     addTransition(document.getElementById('switch-sign'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
@@ -333,6 +346,12 @@ function switchSign() {
     if (!isInitialState(calcDisplay)) {
         calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
     }
+}
+
+function isDisplayingTinyNumMessage() {
+    const reminderMessage = document.getElementById('reminder-message');
+    const refMessage = 'Calculator only works to 8 eight decimals. Please input something else.'
+    return reminderMessage.textContent == refMessage && reminderMessage.style.visibility == 'visible' ? true: false;
 }
 
 function removePartialResetFromAll() {
@@ -388,19 +407,19 @@ function isConsecutiveOperator(num, operator) {
 }
 
 function add(a, b) {
-    return +(a + b).toFixed(8);
+    return a + b;
 }
 
 function subtract(a, b) {
-    return +(a - b).toFixed(8);
+    return a - b;
 }
 
 function multiply(a, b) {
-    return +(a * b).toFixed(8);
+    return a * b;
 }
 
 function divide(a, b) {
-    return +(a / b).toFixed(8);
+    return a / b;
 }
 
 function operate(num1, num2, operator) {
