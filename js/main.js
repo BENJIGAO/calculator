@@ -245,23 +245,69 @@ function outputClearMessage() {
     reminderMessage.textContent = 'Press CLEAR to continue'
 }
 
-function square() {
+function switchSign() {
     hideReminderMessage();
     configureDocumentForEqualsSign();
     configureNumBtnsForEqualsSign();
     configureDotBtnForEqualsSign();
+    addTransition(document.getElementById('switch-sign'));
+    const calcDisplay = document.getElementById('number-display');
+    if (checkSpecialCase(calcDisplay)) return;
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
+    if (!isInitialState(calcDisplay)) {
+        calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
+    }
+}
+
+function convertPercent() {
+    hideReminderMessage();
+    
+    addTransition(document.getElementById('percent'));
+    const calcDisplay = document.getElementById('number-display');
+    let desiredNum = calcDisplay.dataset.num2 != 0 ? calcDisplay.dataset.num2 : calcDisplay.dataset.num1;
+    if (checkSpecialCase(calcDisplay)) return;
+    const percentNum = (+desiredNum / 100);
+    if (isTinyNum(percentNum)) {
+        outputTinyNumMessage();
+        return;
+    }
+    if (!isInitialState(calcDisplay)) {
+        if (calcDisplay.dataset.num2 == 0) {
+            calcDisplay.dataset.num1 = calcDisplay.textContent = String(+percentNum.toFixed(8));
+            return;
+        }
+        calcDisplay.dataset.num2 = calcDisplay.textContent = String(+percentNum.toFixed(8));
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
+    }
+}
+
+function square() {
+    hideReminderMessage();
     addTransition(document.getElementById('squared'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
-    const squaredNum = +calcDisplay.textContent * +calcDisplay.textContent;
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    const squaredNum = num2 == 0 ? num1 * num1 : num2 * num2;
     if (isTinyNum(squaredNum)) {
         outputTinyNumMessage();
         return;
     }
     newStringNum = +squaredNum.toFixed(8);
     if (!isInitialState(calcDisplay)) {
-    calcDisplay.textContent = newStringNum;
-    calcDisplay.dataset.num2 = '0' + newStringNum;
+        calcDisplay.textContent = newStringNum;
+        if (num2 == 0) {
+            calcDisplay.dataset.num1 = newStringNum;
+            return;
+        }
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
+        calcDisplay.dataset.num2 = '0' + newStringNum;
     }
 }
 
@@ -308,29 +354,7 @@ function hasOneDot(display) {
     return display.textContent.includes('.')
 } 
 
-function convertPercent() {
-    hideReminderMessage();
-    
-    addTransition(document.getElementById('percent'));
-    const calcDisplay = document.getElementById('number-display');
-    let desiredNum = calcDisplay.dataset.num2 != 0 ? calcDisplay.dataset.num2 : calcDisplay.dataset.num1;
-    if (checkSpecialCase(calcDisplay)) return;
-    const percentNum = (+desiredNum / 100);
-    if (isTinyNum(percentNum)) {
-        outputTinyNumMessage();
-        return;
-    }
-    if (!isInitialState(calcDisplay)) {
-        if (calcDisplay.dataset.num2 == 0) {
-            calcDisplay.dataset.num1 = calcDisplay.textContent = String(+percentNum.toFixed(8));
-            return
-        }
-        calcDisplay.dataset.num2 = calcDisplay.textContent = String(+percentNum.toFixed(8));
-        configureDocumentForEqualsSign();
-        configureNumBtnsForEqualsSign();
-        configureDotBtnForEqualsSign();
-    }
-}
+
 
 function outputTinyNumMessage() {
     const reminderMessage = document.getElementById('reminder-message');
@@ -340,20 +364,6 @@ function outputTinyNumMessage() {
 
 function isTinyNum(num) {
     return num < 0.00000001 && num > 0 ? true : false;
-}
-
-function switchSign() {
-    hideReminderMessage();
-    configureDocumentForEqualsSign();
-    configureNumBtnsForEqualsSign();
-    configureDotBtnForEqualsSign();
-    addTransition(document.getElementById('switch-sign'));
-    const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
-    const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
-    if (!isInitialState(calcDisplay)) {
-        calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
-    }
 }
 
 function isDisplayingTinyNumMessage() {
