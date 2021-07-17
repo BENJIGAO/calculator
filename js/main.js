@@ -411,7 +411,7 @@ function isInitialState(display) {
 
 function isConsecutiveOperator(num, operator) {
     // num has to be string or else entering a '0' still returns true even though data-num2 = '00' (logs as 0 as int)
-    return num == '0' && operator != '/' ? true : false
+    return num == '0' ? true : false
 }
 
 function add(a, b) {
