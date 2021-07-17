@@ -6,34 +6,40 @@
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-    <div id="calculator-grid">
-        <div id="display-container">
-            <p id="reminder-message">Placeholder</p>
-            <div data-num1="0" data-operator="+" data-num2="0" id="number-display"> 0</div>
+    <div id="irrelevant"></div>
+    <div id="main-content-container">
+        <h1>Calculator</h1>
+        <h2>(With Keyboard Support!)</h2>
+        <div id="calculator-grid">
+            <div id="display-container">
+                <p id="reminder-message">Placeholder</p>
+                <div data-num1="0" data-operator="+" data-num2="0" id="number-display"> 0</div>
+            </div>
+            <button class="non-circle-top" id="clear">CLEAR</button> 
+            <button class="non-circle-top" id="backspace">BACKSPACE</button> 
+            <button class="lightgray" id="squared">x²</button>
+            <button class="lightgray" id="percent">%</button>
+            <button class="lightgray" id="switch-sign"><span>+</span>/<span>-</span></button>
+            <button class="operator orange" id="_/">÷</button>
+            <button class="num darkgray" id="_7">7</button>
+            <button class="num darkgray" id="_8">8</button>
+            <button class="num darkgray" id="_9">9</button>
+            <button class="operator orange" id="_*">x</button>
+            <button class="num darkgray" id="_4">4</button>
+            <button class="num darkgray" id="_5">5</button>
+            <button class="num darkgray" id="_6">6</button>
+            <button class="operator orange" id="_-">-</button>
+            <button class="num darkgray" id="_1">1</button>
+            <button class="num darkgray" id="_2">2</button>
+            <button class="num darkgray" id="_3">3</button>
+            <button class="operator orange" id="_+">+</button>
+            <button class="num non-circle-bottom darkgray" id="_0">0</button>
+            <button class="darkgray" id="dot">.</button>
+            <button class="operator orange" id="_=">=</button>
         </div>
-        <button class="non-circle-top" id="clear">CLEAR</button> 
-        <button class="non-circle-top" id="backspace">BACKSPACE</button> 
-        <button class="lightgray" id="squared">x²</button>
-        <button class="lightgray" id="percent">%</button>
-        <button class="lightgray" id="switch-sign"><span>+</span>/<span>-</span></button>
-        <button class="operator orange" id="_/">÷</button>
-        <button class="num darkgray" id="_7">7</button>
-        <button class="num darkgray" id="_8">8</button>
-        <button class="num darkgray" id="_9">9</button>
-        <button class="operator orange" id="_*">x</button>
-        <button class="num darkgray" id="_4">4</button>
-        <button class="num darkgray" id="_5">5</button>
-        <button class="num darkgray" id="_6">6</button>
-        <button class="operator orange" id="_-">-</button>
-        <button class="num darkgray" id="_1">1</button>
-        <button class="num darkgray" id="_2">2</button>
-        <button class="num darkgray" id="_3">3</button>
-        <button class="operator orange" id="_+">+</button>
-        <button class="num non-circle-bottom darkgray" id="_0">0</button>
-        <button class="darkgray" id="dot">.</button>
-        <button class="operator orange" id="_=">=</button>
-          
     </div>
+    <div id="key-guide-container"></div>
+    
     <script src="js/main.js"></script>
 </body>
 </html>

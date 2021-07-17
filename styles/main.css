@@ -1,7 +1,11 @@
 body {
     height: 100vh;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 350px 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
     justify-content: center;
+
 }
 
 button {
@@ -29,6 +33,12 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     width: 65px;
     align-self: center;
     justify-self: center;
+}
+
+#main-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #calculator-grid {
