@@ -247,17 +247,24 @@ function outputClearMessage() {
 
 function switchSign() {
     hideReminderMessage();
-    configureDocumentForEqualsSign();
-    configureNumBtnsForEqualsSign();
-    configureDotBtnForEqualsSign();
+    
     addTransition(document.getElementById('switch-sign'));
     const calcDisplay = document.getElementById('number-display');
     if (checkSpecialCase(calcDisplay)) return;
-    let num1 = calcDisplay.dataset.num1;
-    let num2 = calcDisplay.dataset.num2;
-    const oppSignNum = String(+calcDisplay.dataset.num2 * -1);
+    let num1 = +calcDisplay.dataset.num1;
+    let num2 = +calcDisplay.dataset.num2;
+    const oppSignNum = num2 == 0 ? String(num1 * -1) : String(num2 * -1) ;
     if (!isInitialState(calcDisplay)) {
-        calcDisplay.dataset.num2 = calcDisplay.textContent = oppSignNum;
+        calcDisplay.textContent = oppSignNum;
+        if (num2 == 0) {
+            calcDisplay.dataset.num1 = oppSignNum;
+            return;
+        }
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
+        calcDisplay.dataset.num2 = oppSignNum;
+
     }
 }
 
@@ -266,7 +273,9 @@ function convertPercent() {
     
     addTransition(document.getElementById('percent'));
     const calcDisplay = document.getElementById('number-display');
-    let desiredNum = calcDisplay.dataset.num2 != 0 ? calcDisplay.dataset.num2 : calcDisplay.dataset.num1;
+    let num1 = calcDisplay.dataset.num1;
+    let num2 = calcDisplay.dataset.num2;
+    let desiredNum = num2 == 0 ? num1 : num2;
     if (checkSpecialCase(calcDisplay)) return;
     const percentNum = (+desiredNum / 100);
     if (isTinyNum(percentNum)) {
