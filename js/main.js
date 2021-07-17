@@ -161,9 +161,10 @@ function updateDisplayAndData(display, result, operator) {
         outputClearMessage();
         return;
     } 
-    display.textContent = result;
+    roundedResult = +result.toFixed(8);
+    display.textContent = roundedResult;
     
-    display.dataset.num1 = result;
+    display.dataset.num1 = roundedResult;
     display.dataset.operator = operator;
     display.dataset.num2 = '0';
 
@@ -203,8 +204,9 @@ function alterDisplayAndData(display, result) {
         outputClearMessage();
         return;
     } 
-    display.textContent = result;
-    display.dataset.num2 = result;
+    roundedResult = +result.toFixed(8);
+    display.textContent = roundedResult;
+    display.dataset.num2 = roundedResult;
     display.dataset.operator = '+';
     display.dataset.num1 = '0';
 
@@ -308,19 +310,25 @@ function hasOneDot(display) {
 
 function convertPercent() {
     hideReminderMessage();
-    configureDocumentForEqualsSign();
-    configureNumBtnsForEqualsSign();
-    configureDotBtnForEqualsSign();
+    
     addTransition(document.getElementById('percent'));
     const calcDisplay = document.getElementById('number-display');
+    let desiredNum = calcDisplay.dataset.num2 != 0 ? calcDisplay.dataset.num2 : calcDisplay.dataset.num1;
     if (checkSpecialCase(calcDisplay)) return;
-    const percentNum = (+calcDisplay.dataset.num2 / 100);
+    const percentNum = (+desiredNum / 100);
     if (isTinyNum(percentNum)) {
         outputTinyNumMessage();
         return;
     }
     if (!isInitialState(calcDisplay)) {
+        if (calcDisplay.dataset.num2 == 0) {
+            calcDisplay.dataset.num1 = calcDisplay.textContent = String(+percentNum.toFixed(8));
+            return
+        }
         calcDisplay.dataset.num2 = calcDisplay.textContent = String(+percentNum.toFixed(8));
+        configureDocumentForEqualsSign();
+        configureNumBtnsForEqualsSign();
+        configureDotBtnForEqualsSign();
     }
 }
 
