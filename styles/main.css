@@ -208,6 +208,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-bottom: -25px;
 }
 
 #key-guide-container {
