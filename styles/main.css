@@ -183,7 +183,8 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 
 #side-container {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #key-guide-container {
@@ -195,6 +196,28 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     box-shadow: 4px 4px 5px 5px, -4px -4px 15px 5px;
     border-radius: 30px;
     padding: 15px 0px 15px 15px;
+}
+
+#switch input {
+    display: none;
+}
+
+.slider {
+    height: 50px;
+    width: 100px;
+    cursor: pointer;
+    position: relative;
+    background-color: lightgray;
+}
+
+.slider:before {
+    content: '';
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    top: 5px;
+    left: 5px;
+    background-color: darkgrey;
 }
 
 
