@@ -5,7 +5,7 @@ div {
 body {
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 400px 1fr;
+    grid-template-columns: 1fr 450px 1fr;
     grid-template-rows: 1fr;
     align-items: center;
     justify-content: center;
@@ -30,9 +30,23 @@ button {
     transition: background-color 0.3s ease-in;
 }
 
+#header-container {
+    justify-self: flex-end;
+    text-align: end;
+}
+
 button:hover {
     opacity: 0.8;
 }
+h1 {
+    font-size: 5em;
+    font-weight: bold;
+}
+h2 {
+    font-size: 1em;
+}
+a {color: blue}
+a:visited {text-decoration: none;}
 
 span {
     font-family: 'Courier New', Courier, monospace;
