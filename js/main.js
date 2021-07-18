@@ -88,14 +88,17 @@ function switchSign() {
     let num1 = calcDisplay.dataset.num1;
     let num2 = calcDisplay.dataset.num2;
     if (isInfinity()) {
+        // Due to the code design, num2 may equal '0Infinity' which is converted to NaN
         if (num2 == '0Infinity') num2 = 'Infinity';
     }
+    // Doesn't output clear message unless user backspaced from Infinity
     if (!num1.includes('Infinity') && !num2.includes('Infinity')) {
         if (isSpecialCase(calcDisplay)) return;
     }
     const oppSignNum = +num2 == 0 ? String(+num1 * -1) : String(+num2 * -1);
     if (!isInitialState(calcDisplay)) {
         calcDisplay.textContent = oppSignNum;
+        // This check is necessary with the three buttons at the top to check for an operator being pressed before one of the three buttons is pressed, as the operator sets num == 0
         if (num2 == 0) {
             calcDisplay.dataset.num1 = oppSignNum;
             return;
@@ -105,7 +108,6 @@ function switchSign() {
         configureNumBtnsForEqualsSign();
         configureDotBtnForEqualsSign();
         calcDisplay.dataset.num2 = oppSignNum;
-
     }
 }
 
@@ -207,7 +209,6 @@ function addTransition(ele) {
     ele.offsetHeight;
     ele.classList.remove('no-transition');
     ele.classList.remove('active');
-
 }
 
 function activateBtns() {
@@ -235,10 +236,6 @@ function activateBtns() {
     const squaredBtn = document.getElementById('squared');
     squaredBtn.addEventListener('click', square);
 }
-
-
-
-
 
 function updateDisplayAndData(display, result, operator) {
     if (isSpecialCase(display)) return
@@ -320,8 +317,8 @@ function backspace() {
         calcDisplay.textContent = newDisplay;
         calcDisplay.dataset.num2 = '0' + newDisplay;
     }
-
 }
+
 function addDot() {
     hideReminderMessage();
     addTransition(document.getElementById('dot'));
@@ -332,14 +329,12 @@ function addDot() {
         calcDisplay.dataset.num2 += '.';
         return;
     }
-    
     if (hasOneDot(calcDisplay)) {
         const reminderMessage = document.getElementById('reminder-message');
         reminderMessage.style.visibility = 'visible';
         reminderMessage.textContent = 'Only Enter one Dot';
         return;
     }
-    
     calcDisplay.textContent += '.';
     calcDisplay.dataset.num2 += '.';
 }
@@ -351,8 +346,6 @@ function hideReminderMessage() {
 function hasOneDot(display) {
     return display.textContent.includes('.')
 } 
-
-
 
 function outputTinyNumMessage() {
     const reminderMessage = document.getElementById('reminder-message');
@@ -410,7 +403,6 @@ function resetCalculator() {
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
     removePartialResetFromAll();
-    
 }
 
 function isInitialState(display) {
@@ -471,7 +463,6 @@ function configureDotBtnForEqualsSign() {
     dotBtn.removeEventListener('click', addDot);
     dotBtn.addEventListener('click', partialReset);
     dotBtn.addEventListener('click', addDot);
-
 }
 
 function configureDocumentForOperator() {
