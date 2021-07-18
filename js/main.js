@@ -1,3 +1,5 @@
+// For the javascript of this calculator, the three data attributes within the number-display node (most appropriate place to put, but could have been put anywhere) are central to the functioning of the calculator. They are num1, operator, and num2 respectively. They two nums start at 0 and the operator at + so to avoid any problems that occurs in the initial state of the calculator. When a user presses numbers or dots, num2 updates alongside the text content of the number display node. However, when an operator is pressed (+, -, x, /, or =) an operation is carried out using num1, operator, and num2, where num1 is the first number. For example, if num1 = 9, operator = /, and num2 = 3, then the operation carries out 9 / 3, which equals 3. The operator stores the result in num1, makes num2 equal to 0, then updates the operator to whatever the user pressed. This way the user can always enter numbers with the previous result being stored and able to use for the next calculation. The three buttons at the top (x², %, and +/-) are programmed so that they update whichever number is appropriate whcih is usually num2, but can also be num1, when the user pressed an operator before. There's also many functions, such as isInfinity and isSpecialCase that deals with special cases, such as backspacing Infinity or a scientific number.  
+
 activateToggleSwitch()
 addKeyboardSupport();
 activateBtns();
@@ -285,6 +287,7 @@ function isSpecialCase(display) {
     }
 }
 
+// 'key' prefix signifies the relationship with the events of the keys on the keyboard
 function keyPartialReset(e) {
     const numsAndDot = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
     if (numsAndDot.includes(e.key)) {
