@@ -18,6 +18,10 @@ h3 {
     font-size: 25px;
 }
 
+strong {
+    font-weight: bold;
+}
+
 button {
     border: none;
     color: white;
