@@ -88,11 +88,12 @@ function switchSign() {
     let num1 = calcDisplay.dataset.num1;
     let num2 = calcDisplay.dataset.num2;
     if (isInfinity()) {
-        if (num1.includes('Infinity')) num1 = 'Infinity';
-        if (num2.includes('Infinity')) num2 = 'Infinity';
+        if (num2 == '0Infinity') num2 = 'Infinity';
     }
-    if (isSpecialCase(calcDisplay)) return;
-    const oppSignNum = +num2 == 0 ? String(+num1 * -1) : String(+num2 * -1) ;
+    if (!num1.includes('Infinity') && !num2.includes('Infinity')) {
+        if (isSpecialCase(calcDisplay)) return;
+    }
+    const oppSignNum = +num2 == 0 ? String(+num1 * -1) : String(+num2 * -1);
     if (!isInitialState(calcDisplay)) {
         calcDisplay.textContent = oppSignNum;
         if (num2 == 0) {
@@ -110,7 +111,6 @@ function switchSign() {
 
 function convertPercent() {
     hideReminderMessage();
-    
     addTransition(document.getElementById('percent'));
     const calcDisplay = document.getElementById('number-display');
     let num1 = calcDisplay.dataset.num1;
