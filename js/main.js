@@ -1,5 +1,14 @@
+activateToggleSwitch()
 addKeyboardSupport();
 activateBtns();
+
+function activateToggleSwitch() {
+    document.querySelector('.slider').addEventListener('click', toggleOpaque);
+}
+
+function toggleOpaque() {
+    document.getElementById('key-guide-container').classList.toggle('opaque');
+}
 
 function addKeyboardSupport() {
     document.addEventListener('keydown', executeKeyIfValid);

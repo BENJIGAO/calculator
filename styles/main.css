@@ -195,7 +195,8 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     width: 250px;
     box-shadow: 4px 4px 5px 5px, -4px -4px 15px 5px;
     border-radius: 30px;
-    padding: 15px 0px 15px 15px;
+    padding: 15px 0px 20px 15px;
+    transition: 0.4s;
 }
 
 #switch-container {
@@ -263,6 +264,10 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+.opaque {
+    opacity: 0;
 }
 
 
