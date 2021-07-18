@@ -13,7 +13,9 @@ body {
 }
 
 h3 {
-    
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 25px;
 }
 
 button {
@@ -29,8 +31,17 @@ button:hover {
 }
 
 span {
-    font-size:20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    background-color: lightgray;
+    padding: 2px 5px;
+}
 
+span.custom {
+    font-family: inherit;
+    font-size: 20px;
+    background-color: transparent;
+    padding: 0px;
 }
 
 button:not(.non-circle-bottom):not(.non-circle-top) {
@@ -172,9 +183,14 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
 }
 
 #key-guide-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     height: 400px;
-    width: 200px;
+    width: 250px;
     box-shadow: 4px 4px 5px 5px, -4px -4px 15px 5px;
     border-radius: 30px;
-    padding: 15px 0px 0px 15px;
+    padding: 15px 0px 15px 15px;
 }
+
+
