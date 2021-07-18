@@ -35,11 +35,6 @@ function executeKeyIfValid(e) {
                 doOperation(createObjUsingId('*'))
                 return
             }
-            // '=' case triggers diff function within doOperation()
-            else if (keyPressed == '=') {
-                doOperation(createObjUsingId('='))
-                return;
-            }
             else {
                 doOperation(createObjUsingId(keyPressed))
                 return;
@@ -69,33 +64,34 @@ function populateDisplay(e) {
     hideReminderMessage();
     const numEle = e.target;
     addTransition(numEle);
-    if (isDisplayingTinyNumMessage()) return
+    if (isDisplayingTinyNumMessage()) return;
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
+    if (isSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay)) calcDisplay.textContent = '';
     let appendedNum = numEle.textContent;
     calcDisplay.textContent += appendedNum;
     calcDisplay.dataset.num2 += appendedNum;
 }
+
 function isInfinity() {
     const calcDisplay = document.getElementById('number-display');
     let num1 = calcDisplay.dataset.num1;
     let num2 = calcDisplay.dataset.num2;
+    // num1 would be Infinity only when the user presses an operator to make the result Infinity or directly presses square as many times necessary
     return num1.includes('Infinity') || num2.includes('Infinity') ? true : false; 
 }
 
 function switchSign() {
     hideReminderMessage();
-    
     addTransition(document.getElementById('switch-sign'));
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
     let num1 = calcDisplay.dataset.num1;
     let num2 = calcDisplay.dataset.num2;
     if (isInfinity()) {
         if (num1.includes('Infinity')) num1 = 'Infinity';
         if (num2.includes('Infinity')) num2 = 'Infinity';
     }
+    if (isSpecialCase(calcDisplay)) return;
     const oppSignNum = +num2 == 0 ? String(+num1 * -1) : String(+num2 * -1) ;
     if (!isInitialState(calcDisplay)) {
         calcDisplay.textContent = oppSignNum;
@@ -103,6 +99,7 @@ function switchSign() {
             calcDisplay.dataset.num1 = oppSignNum;
             return;
         }
+        // When num2 != 0, meaning pressing the num or dot btn should partially reset the calculator
         configureDocumentForEqualsSign();
         configureNumBtnsForEqualsSign();
         configureDotBtnForEqualsSign();
@@ -119,12 +116,12 @@ function convertPercent() {
     let num1 = calcDisplay.dataset.num1;
     let num2 = calcDisplay.dataset.num2;
     let desiredNum = num2 == 0 ? num1 : num2;
-    if (checkSpecialCase(calcDisplay)) return;
     if (isInfinity()) {
         calcDisplay.textContent = 'ERROR';
         outputClearMessage();
         return;
     }
+    if (isSpecialCase(calcDisplay)) return;
     const percentNum = (+desiredNum / 100);
     if (isTinyNum(percentNum)) {
         outputTinyNumMessage();
@@ -146,12 +143,12 @@ function square() {
     hideReminderMessage();
     addTransition(document.getElementById('squared'));
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
     if (isInfinity()) {
         calcDisplay.textContent = 'ERROR';
         outputClearMessage();
         return;
     }
+    if (isSpecialCase(calcDisplay)) return;
     let num1 = calcDisplay.dataset.num1;
     let num2 = calcDisplay.dataset.num2;
     const squaredNum = num2 == 0 ? num1 * num1 : num2 * num2;
@@ -244,7 +241,7 @@ function activateBtns() {
 
 
 function updateDisplayAndData(display, result, operator) {
-    if (checkSpecialCase(display)) return
+    if (isSpecialCase(display)) return
     else if (result == 'ERROR') {
         display.textContent = 'ERROR';
         outputClearMessage();
@@ -264,7 +261,7 @@ function updateDisplayAndData(display, result, operator) {
 }
 
 function alterDisplayAndData(display, result) {
-    if (checkSpecialCase(display)) return
+    if (isSpecialCase(display)) return
     else if (result == 'ERROR') {
         display.textContent = 'ERROR';
         outputClearMessage();
@@ -281,10 +278,10 @@ function alterDisplayAndData(display, result) {
     configureDotBtnForEqualsSign();
 }
 
-function checkSpecialCase(display) {
+function isSpecialCase(display) {
     const text = display.textContent;
     const lastChar = text.length - 1;
-    if (text == '-' || text[lastChar] == '-' && text[lastChar - 1] == 'e' || text[lastChar] == 'e' || text.includes('E') || text.includes('e-') && text[lastChar - 1] != '-') {
+    if (text == '-' || text[lastChar] == '-' && text[lastChar - 1] == 'e' || text[lastChar] == 'e' || text.includes('E') || text.includes('e-') && text[lastChar - 1] != '-' || text.includes('I')) {
         display.textContent = 'ERROR';
         outputClearMessage();
         return true;
@@ -329,7 +326,7 @@ function addDot() {
     hideReminderMessage();
     addTransition(document.getElementById('dot'));
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
+    if (isSpecialCase(calcDisplay)) return;
     if (isInitialState(calcDisplay) || calcDisplay.dataset.num2 == '0') {
         calcDisplay.textContent = '.';
         calcDisplay.dataset.num2 += '.';
@@ -383,7 +380,7 @@ function removePartialResetFromAll() {
 
 function partialReset() {
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
+    if (isSpecialCase(calcDisplay)) return;
     calcDisplay.textContent = '';
     calcDisplay.dataset.num1 = calcDisplay.dataset.num2 = '0';
     calcDisplay.dataset.operator = '+';
@@ -400,7 +397,7 @@ function removeResetDisplayFromAll() {
 
 function resetDisplay() {
     const calcDisplay = document.getElementById('number-display');
-    if (checkSpecialCase(calcDisplay)) return;
+    if (isSpecialCase(calcDisplay)) return;
     calcDisplay.textContent = '';
     removeResetDisplayFromAll();
 }
