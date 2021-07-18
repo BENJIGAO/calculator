@@ -48,7 +48,7 @@ button:hover {
     opacity: 0.8;
 }
 h1 {
-    font-size: 5em;
+    font-size: 4.5em;
     font-weight: bold;
 }
 h2 {
@@ -105,6 +105,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     background-color: black;
     border-radius: 25px;
     padding: 5px 10px 30px 10px;
+    transform: scale(0.95);
 }
 
 #display-container {
@@ -209,6 +210,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     flex-direction: column;
     justify-content: center;
     margin-bottom: -25px;
+    transform: scale(0.95) translateX(-20px);
 }
 
 #key-guide-container {
