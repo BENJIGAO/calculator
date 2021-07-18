@@ -4,12 +4,21 @@ div {
 
 body {
     height: 100vh;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 450px 1fr;
     grid-template-rows: 1fr;
     align-items: center;
     justify-content: center;
 
+}
+
+#background {
+    position: absolute;
+    z-index: -1;
+    height: inherit;
+    width: inherit;
+    opacity: 0.6;
 }
 
 h3 {
@@ -211,6 +220,7 @@ button:not(.non-circle-bottom):not(.non-circle-top) {
     border-radius: 30px;
     padding: 15px 0px 20px 15px;
     transition: 0.4s;
+    background-color: white;
 }
 
 #switch-container {
