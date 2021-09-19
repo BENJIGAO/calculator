@@ -55,6 +55,7 @@ button {
     height: inherit;
     width: inherit;
     opacity: 0.5;
+    top: 0;
 }
 
 #header-container {
